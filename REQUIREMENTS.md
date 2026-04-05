@@ -295,3 +295,119 @@ Sistema de plugins para extender funcionalidades mediante integraciones de terce
 ## 4. MODELO DE BASE DE DATOS
 
 Entidades principales: User, Profile, Link, Analytics, Reward, Badge, DigitalCard, Product, Order, EmailCapture, TeamMember, Plugin, UserPlugin
+
+---
+
+## 1.4 Plugins Adicionales: Donaciones y Suscripciones
+
+### Plugin: Donations (Donativos)
+
+| Feature | Descripción |
+|---------|-------------|
+| One-time donations | Donaciones únicas |
+| Recurring donations | Donaciones recurrentes |
+| Custom amounts | Cantidades personalizadas |
+| Preset amounts | Cantidades predefinidas ($5, $10, $25, $50) |
+| Message | Mensaje del donante |
+| Goal tracking | Meta de recolección |
+| Progress bar | Barra de progreso |
+| Leaderboard donors | Lista de donantes |
+| Thank you message | Mensaje de agradecimiento |
+| Tax receipt | Recibo para impuestos |
+
+#### Configuraciones
+- Moneda default
+- Nombre de campaña
+- Descripción
+- Imagen/banner
+- Meta de dinero
+- Deadline de campaña
+
+#### Notificaciones
+- Email al recibir donativo
+- Notificaciones push
+- Dashboard de donaciones
+
+#### Integraciones
+- Stripe (cards)
+- Payphone (Ecuador)
+- PayPal
+- Crypto wallets (ETH, BTC) - opcional
+
+---
+
+### Plugin: Memberships (Suscripciones)
+
+| Feature | Descripción |
+|---------|-------------|
+| Monthly subscriptions | Suscripciones mensuales |
+| Yearly subscriptions | Suscripciones anuales |
+| Multiple tiers | Múltiples niveles (Bronze, Silver, Gold) |
+| Exclusive content | Contenido exclusivo por nivel |
+| Early access | Acceso anticipado |
+| Discounts | Descuentos en productos |
+| Private chat | Chat privado con creator |
+| Members-only links | Links solo para miembros |
+| Gated content | Contenido bloqueado |
+| Member directory | Directorio de miembros |
+
+#### Niveles de Membresía
+| Nivel | Precio | Beneficios |
+|-------|--------|------------|
+| Bronze | $4.99/mes | Contenido básico |
+| Silver | $9.99/mes | Contenido + descuentos |
+| Gold | $19.99/mes | Todo + acceso prioritario + chat |
+
+#### Features por Nivel
+- Access a contenido exclusivo
+- Descuentos en tienda
+- Acceso anticipado a productos
+- Badges especiales en perfil
+- Chat privado con creator
+- Merchandise discounts
+
+#### Suscripción Management
+- Cancelar suscripción
+- Upgrade/Downgrade
+- Pausar suscripción
+- Trial period (7 días gratis)
+- Prorrateo de pagos
+
+#### Notificaciones
+- Nueva membresía
+- Renewal exitoso
+- Cancelación
+- Expiración de trial
+
+---
+
+### Pricing Combination
+
+| Plugin | One-time | Monthly | Yearly |
+|--------|----------|---------|--------|
+| Donations | $2.99/mes | - | - |
+| Memberships | - | $4.99/mes | $49.99/mes |
+| Bundle (Donations + Memberships) | - | $6.99/mes | $69.99/mes |
+
+---
+
+### Tabla de Features Plugins Actualizada
+
+| Plugin | Descripción | Precio |
+|--------|-------------|--------|
+| **Donations** | Recibir donativos únicos/recurrentes | $2.99/mes |
+| **Memberships** | Sistema de membresías con niveles | $4.99/mes |
+| **Bundle** | Donations + Memberships | $6.99/mes |
+| Mini Ecommerce | Tienda de productos | $4.99/mes |
+| Email Marketing | Colección y automation | $2.99/mes |
+| Video Embeds | YouTube, Twitch, Vimeo | $1.99/mes |
+| Music Player | Spotify, SoundCloud | $1.99/mes |
+| Calendly | Citas y reservaciones | $2.99/mes |
+| Course Builder | Crear y vender cursos | $9.99/mes |
+| Reviews | Sistema de testimonios | $1.99/mes |
+| Lead Forms | Formularios avanzados | $2.99/mes |
+| Custom CSS | CSS personalizado | $0.99/mes |
+| Custom JS | JavaScript personalizado | $0.99/mes |
+| API Access | Access a REST API | $9.99/mes |
+| Webhooks | Webhooks ilimitados | $2.99/mes |
+
