@@ -514,3 +514,260 @@ Rate limit: según plan.
 ---
 
 *Document Version: 1.0 - Last Updated: 2026-04-05*
+---
+
+## 13. EDITOR VISUAL DRAG & DROP
+
+### 13.1 Interfaz del Editor
+
+**Descripción:** Panel de edición visual para reorderar links mediante drag & drop.
+
+**Componentes UI:**
+| Componente | Descripción |
+|------------|-------------|
+| **Link Cards** | Cards individuales de cada link con drag handle |
+| **Drop Zone** | Área donde se sueltan los links |
+| **Preview Toggle** | Botón para alternar entre edit/preview |
+| **Add Link Button** | Floating action button para agregar |
+| **Sort Options** | Dropdown para ordenar por fecha/clicks/nombre |
+
+**Datos del Link Card:**
+- thumbnail (imagen)
+- title (texto)
+- icon (emoji)
+- clickCount (número de clicks)
+- isPinned (badge)
+- isFeatured (badge)
+
+### 13.2 Flujo de Drag & Drop
+
+**Inicio:**
+1. Usuario entra a /admin/links
+2. Ve lista de links como cards verticales
+
+**Proceso:**
+1. Usuario presiona y mantiene card (long press en mobile)
+2. Card se eleva (shadow + scale 1.05)
+3. Otros cards se reacomodan mostrando posiciones
+4. Usuario arrastra a nueva posición
+5. Drop zone highlighted donde se colocará
+
+**Validaciones durante drag:**
+- No permite dropping entre links inactivos
+- Limit visual si reachó límite del plan
+
+**Fin:**
+1. Usuario suelta card
+2. Animación de settle (300ms ease-out)
+3. Saving indicator (spinner)
+4. Batch update posiciones en DB
+5. Toast "Links reordenados"
+
+### 13.3 Datos a Guardar
+
+**En DB:**
+- `position` (integer) - actualizada para todos los links
+- `updatedAt` - timestamp
+
+**En Cache (Redis):**
+- Cache del perfil invalidado
+
+**En UI State:**
+- Optimistic update para UX fluida
+
+### 13.4 Comportamiento Móvil
+
+| Feature | Implementación |
+|---------|----------------|
+| **Touch handling** | Long press 300ms para iniciar drag |
+| **Scroll** | Scroll natural, no interfere con drag |
+| **Feedback haptic** | Vibración al iniciar drag y al drop |
+| **Ghost image** | Card semi-transparente sigue el finger |
+
+### 13.5 Keyboard Accessibility
+
+- Tab para navegar entre links
+- Arrow keys para reordenar
+- Enter para confirmar posición
+
+---
+
+## 14. PANEL DE CONTROL (DASHBOARD) RESPONSIVE
+
+### 14.1 Diseño Mobile-First
+
+**Breakpoints:**
+| Breakpoint | Ancho | Layout |
+|------------|-------|--------|
+| Mobile | < 640px | Single column, bottom nav |
+| Tablet | 640-1024px | Two columns, sidebar collapsible |
+| Desktop | > 1024px | Full layout, sidebar fixed |
+
+### 14.2 Mobile Dashboard
+
+**Estructura Mobile:**
+
+```
+┌─────────────────────────┐
+│  ☰  BioCard    👤     │  <- Header (fixed)
+├─────────────────────────┤
+│  ┌─────────────────┐   │
+│  │   📊 Overview   │   │  <- Stats cards (horizontal scroll)
+│  │   1,234 visits  │   │
+│  │   567 clicks    │   │
+│  └─────────────────┘   │
+├─────────────────────────┤
+│  📈 Analytics (mini)    │
+│  [sparkline chart]      │
+├─────────────────────────┤
+│  🔗 Recent Links        │  <- Cards list
+│  ├─ Instagram           │
+│  ├─ YouTube             │
+│  └─ Website             │
+├─────────────────────────┤
+│  ➕ Create Link         │  <- FAB
+├─────────────────────────┤
+│  [Dashboard] [Links]    │  <- Bottom nav
+│  [Analytics] [Settings]│
+└─────────────────────────┘
+```
+
+### 14.3 Components del Dashboard
+
+**Stats Cards:**
+- Visits (total, +X% vs last period)
+- Clicks (total, top link)
+- Links (active / total)
+- Revenue (si tiene e-commerce)
+
+**Quick Actions:**
+- Create Link (FAB)
+- View Profile (eye icon)
+- Share (share icon)
+- Copy Link (link icon)
+
+**Recent Activity:**
+- Link clicks
+- New signups
+- New orders
+- Analytics alerts
+
+### 14.4 Datos a Exponer
+
+**API Response para Dashboard:**
+```json
+{
+  "user": { "name", "avatar", "plan" },
+  "stats": {
+    "visits": { "total": 1234, "change": 12.5 },
+    "clicks": { "total": 567, "change": -3.2 },
+    "links": { "active": 8, "total": 10 }
+  },
+  "topLinks": [
+    { "id": 1, "title": "Instagram", "clicks": 234 }
+  ],
+  "recentActivity": [
+    { "type": "click", "linkId": 1, "time": "2m ago" }
+  ]
+}
+```
+
+### 14.5 Mobile Optimizations
+
+| Feature | Implementación |
+|---------|----------------|
+| **Lazy loading** | Cargar datos al hacer scroll |
+| **Skeleton screens** | Loading placeholders |
+| **Pull to refresh** | Actualizar datos |
+| **Offline indicator** | Avisar si sin conexión |
+| **Touch targets** | Mínimo 44px |
+
+---
+
+## 15. PREVIEW EN TIEMPO REAL
+
+### 15.1 Modal de Preview
+
+**Descripción:** Ver cambios en el perfil mientras se edita.
+
+**Activación:**
+- Botón "Preview" en header del editor
+- Tecla快捷键 (Cmd/Ctrl + P)
+
+**Diseño del Modal:**
+```
+┌─────────────────────────────────┐
+│  📱 Preview          ✕         │
+├─────────────────────────────────┤
+│  ┌─────────────────────────┐    │
+│  │                         │    │
+│  │    PERFIL PUBLICO      │    │  <- Renderizado real
+│  │    (exactamente)       │    │
+│  │                         │    │
+│  │  [Avatar]              │    │
+│  │  @username             │    │
+│  │  Bio text here         │    │
+│  │                         │    │
+│  │  ┌────────────────┐    │    │
+│  │  │ 🔗 Link 1      │    │    │
+│  │  ├────────────────┤    │    │
+│  │  │ 🔗 Link 2      │    │    │
+│  │  ├────────────────┤    │    │
+│  │  │ 🔗 Link 3      │    │    │
+│  │  └────────────────┘    │    │
+│  └─────────────────────────┘    │
+├─────────────────────────────────┤
+│  [Desktop] [Tablet] [Mobile]   │  <- Device toggle
+└─────────────────────────────────┘
+```
+
+### 15.2 Device Preview Toggle
+
+**Opciones:**
+| Device | Viewport |
+|--------|----------|
+| Desktop | 1280px |
+| Tablet | 768px |
+| Mobile | 375px |
+
+**Comportamiento:**
+- Iframe con ancho del device
+- Escala para ajustar en pantalla
+- Orientación toggle (portrait/landscape)
+
+### 15.3 Live Updates
+
+**Flujo:**
+1. Usuario edita en panel izquierdo
+2. Preview actualiza en tiempo real (debounce 300ms)
+3. Sin necesidad de guardar primero
+
+**Tecnologías:**
+- React state sync
+- WebSocket para colaboración (futuro)
+
+### 15.4对比: Edit vs Preview Mode
+
+| Aspecto | Edit Mode | Preview Mode |
+|---------|-----------|--------------|
+| Links clickables | No (solo visual) | Sí (funcional) | 
+| Analytics | No registra | Registra |
+| Animaciones | Desactivadas | Activadas |
+| QR code | Visible | Visible |
+
+### 15.5 Datos a Exponer
+
+**Endpoint:** `GET /api/profiles/:id/preview`
+
+**Response:**
+```json
+{
+  "profile": { /* full profile data */ },
+  "links": [ /* active links */ ],
+  "theme": { /* theme config */ },
+  "socialLinks": [ /* social icons */ }
+}
+```
+
+---
+
