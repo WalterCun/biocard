@@ -21,12 +21,12 @@ Ver [VERSION_ROADMAP.md](./VERSION_ROADMAP.md) para el plan de implementación c
 
 | Capa | Tecnología |
 |------|------------|
-| Frontend | Next.js 14 + TypeScript |
+| **Frontend** | Astro + React (islands) + Tailwind CSS |
 | Backend | FastAPI (Python) |
 | Database | PostgreSQL + Prisma |
 | Auth | JWT |
 | Payments | Stripe, Payphone, PayPal |
-| Hosting | Vercel + Railway |
+| Hosting | Cloudflare Pages (web) + Railway (API) |
 
 ## 🚀 Getting Started
 
