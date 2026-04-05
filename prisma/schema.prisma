@@ -1,0 +1,533 @@
+// This is your Prisma schema file
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================
+// USER & AUTH
+// ==========================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  name          String?
+  image         String?
+  password      String?   // For email auth
+  plan          Plan      @default(FREE)
+  points        Int       @default(0)
+  level          String    @default("bronze")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  profile       Profile?
+  accounts      Account[]
+  sessions      Session[]
+  memberships   Subscription[]
+  teamMemberships TeamMember[]
+  apiKeys       ApiKey[]
+  rewards       Reward[]
+  badges        UserBadge[]
+  referredBy    Referral[]  @relation("Referrer")
+  referredTo    Referral[]  @relation("Referred")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ==========================================
+// PLAN ENUMS
+// ==========================================
+
+enum Plan {
+  FREE
+  BASIC
+  PRO
+  ENTERPRISE
+}
+
+enum UserRole {
+  OWNER
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+// ==========================================
+// PROFILE & LINKS
+// ==========================================
+
+model Profile {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  username         String   @unique
+  displayName      String?
+  bio              String?  @db.Text
+  avatar           String?
+  theme            String   @default("dark")
+  backgroundColor  String   @default("#1a1a2e")
+  backgroundImage  String?
+  font             String   @default("inter")
+  customDomain     String?
+  domainVerified   Boolean  @default(false)
+  isPublic         Boolean  @default(true)
+  passwordHash     String?  // For profile password protection
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  links       Link[]
+  socialLinks SocialLink[]
+  analytics   Analytics[]
+  products    Product[]
+  emails      EmailCapture[]
+  campaign    DonationCampaign?
+  memberships  MembershipTier[]
+  teamMembers  TeamMember[]
+
+  @@index([username])
+  @@index([customDomain])
+}
+
+model Link {
+  id            String    @id @default(cuid())
+  profileId     String
+  title         String
+  url           String
+  icon          String?   // Emoji
+  thumbnail     String?
+  position      Int       @default(0)
+  isActive      Boolean   @default(true)
+  isFeatured    Boolean   @default(false)
+  isPinned      Boolean   @default(false)
+  category      String?
+  clickLimit    Int?
+  clickCount    Int       @default(0)
+  password      String?   // bcrypt
+  scheduleStart DateTime?
+  scheduleEnd   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  profile   Profile    @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  analytics Analytics[]
+
+  @@index([profileId])
+  @@index([position])
+}
+
+model SocialLink {
+  id         String   @id @default(cuid())
+  profileId  String
+  platform   String   // instagram, twitter, youtube, tiktok, etc
+  url        String
+  createdAt  DateTime @default(now())
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, platform])
+}
+
+// ==========================================
+// ANALYTICS
+// ==========================================
+
+model Analytics {
+  id         String   @id @default(cuid())
+  profileId  String
+  linkId     String?
+  visitorId  String?   // Cookie ID or IP hash
+  ip         String?   // Truncated
+  userAgent  String?
+  device     String?   // mobile, desktop, tablet
+  country    String?
+  city       String?
+  referrer   String?
+  utmSource  String?
+  utmMedium  String?
+  utmCampaign String?
+  eventType  String   @default("visit") // visit, click
+  createdAt  DateTime @default(now())
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  link    Link?   @relation(fields: [linkId], references: [id], onDelete: SetNull)
+
+  @@index([profileId])
+  @@index([createdAt])
+  @@index([linkId])
+}
+
+// ==========================================
+// E-COMMERCE
+// ==========================================
+
+model Product {
+  id            String   @id @default(cuid())
+  profileId     String
+  name          String
+  description   String?  @db.Text
+  price         Decimal  @db.Decimal(10, 2)
+  currency      String   @default("USD")
+  fileUrl       String?  // Digital products
+  thumbnailUrl  String?
+  isActive      Boolean  @default(true)
+  salesCount   Int      @default(0)
+  inventoryCount Int?
+  shippingOptions Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  profile Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  orders  Order[]
+
+  @@index([profileId])
+}
+
+model Order {
+  id                   String   @id @default(cuid())
+  buyerId              String?  // Guest checkout or user ID
+  buyerEmail           String
+  productId            String
+  amount               Decimal  @db.Decimal(10, 2)
+  currency             String   @default("USD")
+  status               OrderStatus @default(PENDING)
+  stripePaymentId      String?
+  payphoneTransactionId String?
+  paypalOrderId        String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  product Product @relation(fields: [productId], references: [id])
+
+  @@index([productId])
+  @@index([buyerId])
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+// ==========================================
+// EMAIL MARKETING
+// ==========================================
+
+model EmailCapture {
+  id          String   @id @default(cuid())
+  profileId   String
+  email       String
+  source      String?  // modal, embedded, form
+  confirmedAt DateTime?
+  createdAt   DateTime @default(now())
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, email])
+  @@index([profileId])
+}
+
+// ==========================================
+// DONATIONS
+// ==========================================
+
+model DonationCampaign {
+  id           String   @id @default(cuid())
+  profileId    String   @unique
+  name         String
+  description  String?  @db.Text
+  goalAmount   Decimal  @db.Decimal(10, 2)
+  currentAmount Decimal  @default(0) @db.Decimal(10, 2)
+  currency     String   @default("USD")
+  isActive     Boolean  @default(true)
+  showDonors   Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  profile   Profile    @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  donations Donation[]
+
+  @@index([profileId])
+}
+
+model Donation {
+  id             String   @id @default(cuid())
+  campaignId     String
+  donorEmail     String
+  amount         Decimal  @db.Decimal(10, 2)
+  message        String?
+  status         DonationStatus @default(PENDING)
+  paymentMethod  String?
+  transactionId  String?
+  createdAt      DateTime @default(now())
+
+  campaign DonationCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId])
+}
+
+enum DonationStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+// ==========================================
+// MEMBERSHIPS
+// ==========================================
+
+model MembershipTier {
+  id          String   @id @default(cuid())
+  profileId   String
+  name        String   // Bronze, Silver, Gold
+  price       Decimal  @db.Decimal(10, 2)
+  interval    String   @default("monthly") // monthly, yearly
+  description String?  @db.Text
+  features    Json     // Array of features
+  isActive    Boolean  @default(true)
+  stripePriceId String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  profile       Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  subscriptions Subscription[]
+
+  @@index([profileId])
+}
+
+model Subscription {
+  id                   String   @id @default(cuid())
+  userId               String
+  tierId               String
+  status               SubscriptionStatus @default(ACTIVE)
+  currentPeriodStart   DateTime
+  currentPeriodEnd     DateTime
+  stripeSubscriptionId String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  user User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tier MembershipTier  @relation(fields: [tierId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tierId])
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+  TRIALING
+}
+
+// ==========================================
+// REWARDS & GAMIFICATION
+// ==========================================
+
+model Reward {
+  id          String   @id @default(cuid())
+  userId      String
+  action      String   // create_link, first_100_clicks, daily_login, etc
+  points      Int
+  description String?
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Badge {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  icon        String?
+  criteria    Json     // Criteria definition
+  createdAt   DateTime @default(now())
+
+  users UserBadge[]
+}
+
+model UserBadge {
+  id        String   @id @default(cuid())
+  userId    String
+  badgeId   String
+  earnedAt  DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge Badge @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeId])
+  @@index([userId])
+}
+
+model Referral {
+  id             String   @id @default(cuid())
+  referrerId     String
+  referredId     String?
+  referredEmail  String?
+  rewardPoints   Int      @default(100)
+  status         ReferralStatus @default(PENDING)
+  createdAt      DateTime @default(now())
+  confirmedAt    DateTime?
+
+  referrer User @relation("Referrer", fields: [referrerId], references: [id], onDelete: Cascade)
+  referred User? @relation("Referred", fields: [referredId], references: [id], onDelete: SetNull)
+
+  @@index([referrerId])
+}
+
+enum ReferralStatus {
+  PENDING
+  CONFIRMED
+  EXPIRED
+}
+
+// ==========================================
+// TEAM & COLLABORATION
+// ==========================================
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  profileId String
+  userId    String?
+  email     String   // For pending invites
+  role      UserRole @default(EDITOR)
+  invitedAt DateTime @default(now())
+  joinedAt  DateTime?
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  user    User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@unique([profileId, email])
+  @@index([profileId])
+  @@index([userId])
+}
+
+// ==========================================
+// API & WEBHOOKS
+// ==========================================
+
+model ApiKey {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  key         String   // Hashed
+  permissions Json     // read, write
+  lastUsedAt  DateTime?
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Webhook {
+  id          String   @id @default(cuid())
+  userId      String
+  url         String
+  events      Json     // Array of events
+  secret      String?
+  isActive    Boolean  @default(true)
+  lastTriggered DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  webhookLogs WebhookLog[]
+
+  @@index([userId])
+}
+
+model WebhookLog {
+  id          String   @id @default(cuid())
+  webhookId   String
+  event       String
+  payload     Json
+  responseStatus Int?
+  error       String?  @db.Text
+  createdAt   DateTime @default(now())
+
+  webhook Webhook @relation(fields: [webhookId], references: [id], onDelete: Cascade)
+
+  @@index([webhookId])
+}
+
+// ==========================================
+// PLUGINS
+// ==========================================
+
+model Plugin {
+  id              String   @id @default(cuid())
+  name            String   @unique
+  slug            String   @unique
+  description     String?  @db.Text
+  icon            String?
+  category        String   // featured, integration, developer
+  version         String   @default("1.0.0")
+  price           Decimal  @default(0) @db.Decimal(10, 2)
+  isCore          Boolean  @default(false)
+  settingsSchema  Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  userPlugins UserPlugin[]
+}
+
+model UserPlugin {
+  id           String   @id @default(cuid())
+  userId       String
+  pluginId     String
+  isActivated  Boolean  @default(false)
+  settings     Json?
+  subscribedAt DateTime @default(now())
+
+  plugin Plugin @relation(fields: [pluginId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, pluginId])
+  @@index([userId])
+}

@@ -1,107 +1,67 @@
-# BioCard
-
-**Link in Bio + Tarjeta Digital + Rewards System**
+# BioCard - Link in Bio + Tarjeta Digital + Rewards
 
 Plataforma SaaS para creadores y negocios en Latinoamérica.
 
-## 🌟 Características
-
-- 🌐 Perfiles personalizables con temas
-- 📊 Analytics avanzados
-- 💳 Sistema de pagos (Stripe, Payphone, PayPal)
-- 🎁 Plugins (Donations, Memberships, Ecommerce)
-- 🏆 Sistema de recompensas
-- 👥 Colaboración en equipo
-
-## 📋 Roadmap
-
-Ver [VERSION_ROADMAP.md](./VERSION_ROADMAP.md) para el plan de implementación completo.
-
-## 🛠 Tech Stack
+## 🌟 Stack Tecnológico
 
 | Capa | Tecnología |
 |------|------------|
-| **Frontend** | Astro + React (islands) + Tailwind CSS |
-| Backend | FastAPI (Python) |
-| Database | PostgreSQL + Prisma |
-| Auth | JWT |
-| Payments | Stripe, Payphone, PayPal |
-| Hosting | Cloudflare Pages (web) + Railway (API) |
+| **Framework** | Next.js 14 (Monolito) |
+| **Backend** | NestJS inside (API Routes) |
+| **Database** | PostgreSQL + Prisma |
+| **Auth** | NextAuth.js |
+| **UI** | Tailwind CSS + shadcn/ui |
+| **Pagos** | Stripe, Payphone, PayPal |
+| **Hosting** | Vercel |
+
+## 📋 Roadmap
+
+Ver [VERSION_ROADMAP.md](./VERSION_ROADMAP.md)
 
 ## 🚀 Getting Started
 
-### Prerequisites
-- Node.js 18+
-- Python 3.11+
-- Docker & Docker Compose
-- PostgreSQL (local o cloud)
-
-### Setup Local
-
 ```bash
-# Clone repository
-git clone https://github.com/WalterCun/biocard.git
-cd biocard
-
-# Start with Docker
-docker-compose up -d
-
-# O manualmente:
-# Backend
-cd api
-pip install -r requirements.txt
-uvicorn main:app --reload
-
-# Frontend
-cd web
+# Install dependencies
 npm install
+
+# Setup database
+npx prisma generate
+npx prisma db push
+
+# Run development
 npm run dev
+
+# Build
+npm run build
 ```
 
-### Environment Variables
-
-Ver `.env.example` para las variables requeridas.
-
-## 📁 Estructura del Proyecto
+## 📁 Estructura
 
 ```
 biocard/
-├── api/                  # Backend FastAPI
-│   ├── src/
-│   │   ├── domain/      # Lógica de negocio
-│   │   ├── infrastructure/  # DB, external APIs
-│   │   ├── application/ # Use cases
-│   │   └── api/         # Endpoints
-│   └── tests/
-├── web/                 # Frontend Next.js
-│   ├── src/
-│   │   ├── app/        # App Router
-│   │   ├── components/ # React components
-│   │   ├── lib/        # Utilities
-│   │   └── styles/     # CSS/Tailwind
-├── docker/              # Docker configs
-├── docs/                # Documentación
-└── scripts/             # Scripts utilities
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── (auth)/            # Auth routes
+│   │   ├── (dashboard)/       # Admin panel
+│   │   ├── api/               # API routes (NestJS style)
+│   │   └── [username]/        # Public profile
+│   ├── components/            # React components
+│   │   ├── ui/                # shadcn/ui
+│   │   └── admin/             # Dashboard components
+│   ├── lib/                   # Utilities
+│   │   ├── db.ts             # Prisma client
+│   │   ├── auth.ts           # NextAuth
+│   │   └── api.ts            # API helpers
+│   └── prisma/               # Database schema
+├── public/
+└── package.json
 ```
 
-## 🔧 Comandos
+## 🎯 Versiones
 
-```bash
-# Development
-docker-compose up
-
-# Run tests
-pytest (backend)
-npm test (frontend)
-
-# Lint
-ruff check . (backend)
-npm run lint (frontend)
-```
-
-## 📝 Licencia
-
-MIT License - ver [LICENSE](./LICENSE)
+- v0.1.0 → Foundation (Setup, Auth, Dashboard)
+- v0.2.0 → Core Links (CRUD, Drag & Drop)
+- v1.0.0 → Production
 
 ---
 

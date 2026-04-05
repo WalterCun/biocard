@@ -38,65 +38,29 @@ services:
       retries: 5
 
   # ==========================================
-  # Backend API (FastAPI)
+  # Next.js App (Monolito)
   # ==========================================
-  api:
+  app:
     build:
-      context: ./api
-      dockerfile: ../docker/Dockerfile.api
-    container_name: biocard-api
+      context: .
+      dockerfile: Dockerfile
+    container_name: biocard-app
     environment:
       DATABASE_URL: postgresql://biocard:biocard_dev_password@postgres:5432/biocard_dev
       REDIS_URL: redis://redis:6379
-      JWT_SECRET: dev_jwt_secret_change_in_production
-      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-sk_test_xxx}
-      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-whsec_xxx}
-      PAYPHONE_CLIENT_ID: ${PAYPHONE_CLIENT_ID:-xxx}
-      PAYPHONE_CLIENT_SECRET: ${PAYPHONE_CLIENT_SECRET:-xxx}
-      PAYPHONE_BASE_URL: https://api.payphone.com
+      NEXTAUTH_SECRET: dev_nextauth_secret
+      NEXTAUTH_URL: http://localhost:3000
     ports:
-      - "8000:8000"
+      - "3000:3000"
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
     volumes:
-      - ./api:/app
-      - /app/__pycache__
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-
-  # ==========================================
-  # Frontend Web (Next.js)
-  # ==========================================
-  web:
-    build:
-      context: ./web
-      dockerfile: ../docker/Dockerfile.web
-    container_name: biocard-web
-    environment:
-      NEXT_PUBLIC_API_URL: http://localhost:8000
-      NEXT_PUBLIC_APP_URL: http://localhost:3000
-    ports:
-      - "3000:3000"
-    depends_on:
-      - api
-    volumes:
-      - ./web:/app
+      - .:/app
       - /app/node_modules
       - /app/.next
-    command: npm run dev
-
-  # ==========================================
-  # Adminer (Database GUI - Dev Only)
-  # ==========================================
-  adminer:
-    image: adminer:latest
-    container_name: biocard-adminer
-    ports:
-      - "8080:8080"
-    depends_on:
-      - postgres
 
 volumes:
   postgres_data:

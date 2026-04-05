@@ -13,9 +13,9 @@
 ### Tareas Técnicas
 | ID | Tarea | Descripción |
 |----|-------|-------------|
-| T1.1 | Setup Astro | Inicializar Astro + React + Tailwind + TypeScript |
-| T1.2 | Setup FastAPI | Backend API con Python FastAPI |
-| T1.3 | Docker Compose | Entorno de desarrollo containerizado |
+| T1.1 | Setup Next.js Monolito | Inicializar Next.js 14 + TypeScript + Tailwind + shadcn/ui |
+| T1.2 | Setup Prisma | Schema de database + migraciones |
+| T1.3 | Docker Compose | Entorno de desarrollo containerizado (Next.js + Postgres) |
 | T1.4 | PostgreSQL + Prisma | Database schema y migraciones |
 | T1.5 | Auth JWT | Registro, login, generación tokens |
 
