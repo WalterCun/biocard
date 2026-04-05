@@ -1,351 +1,332 @@
-# BioCard - Versiones y Roadmap de Implementación
+# BioCard - Roadmap de Implementación
 
-## Metodología
-- Versiones semánticas (v1.0.0, v1.1.0, etc)
-- Cada versión = 1-2 sprints
-- Features marcados por importancia
-- Dependencias claras entre versiones
+## Convenciones de Versiones
+
+- **v0.x.y** = Pre-lanzamiento (desarrollo)
+- **v1.0.0** = Primera versión en producción
+- **v1.x.y** = Mejoras post-lanzamiento
 
 ---
 
-## v1.0.0 - MVP (Core Fundacional)
-**Duración:** 3 semanas (Sprint 0 + Sprint 1)
-**Objetivo:** Producto mínimo viable con links básicos
+## SECUENCIA DE IMPLEMENTACIÓN (Pre-Producción)
 
-### Semana 1: Fundación
-- [ ] Setup Next.js + FastAPI + Prisma
-- [ ] Database schema completo
-- [ ] Autenticación (register, login, JWT)
-- [ ] Dashboard shell responsive
+### v0.1.0 - FOUNDATION
+**Objetivo:** Setup técnico y autenticación
 
-### Semana 2: Links + Perfil Público
-- [ ] CRUD completo de links
-- [ ] Drag & drop reordenar
-- [ ] Perfil público básico (/[username])
-- [ ] Links renderizados en perfil
+| Tarea | Descripción |
+|-------|-------------|
+| Setup Next.js 14 + TypeScript | Repo, estructura, ESLint, Prettier |
+| Setup FastAPI + Python | Backend API |
+| Docker Compose | Entorno de desarrollo |
+| PostgreSQL + Prisma | Schema de database |
+| Registro/Login JWT | Autenticación básica |
+| Dashboard Shell | Layout responsive |
 
-### Semana 3: Polish MVP
-- [ ] 5 temas visuales
-- [ ] QR Code generation
-- [ ] vCard export
-- [ ] Basic analytics (clicks)
-- [ ] Mobile responsive
-
-**Definition of Done v1.0:**
+**Definition of Done:**
+- [ ] Proyecto corre localmente
 - [ ] Usuario puede registrarse e iniciar sesión
-- [ ] Usuario puede crear, editar, eliminar, reordenar links
-- [ ] Perfil público accesible y renderiza links
+
+---
+
+### v0.2.0 - CORE LINKS
+**Objetivo:** Gestión básica de links
+
+| Tarea | Descripción |
+|-------|-------------|
+| CRUD Links | Create, Read, Update, Delete |
+| Drag & Drop | Reordenar links |
+| Perfil Público | Ruta /[username] |
+| Render Links | Mostrar en perfil |
+| Links Básicos | Título, URL, ícono |
+
+**Definition of Done:**
+- [ ] Usuario puede crear y gestionar links
+- [ ] Perfil público muestra links correctamente
+
+---
+
+### v0.3.0 - CUSTOMIZATION
+**Objetivo:** Personalización del perfil
+
+| Tarea | Descripción |
+|-------|-------------|
+| Editor de Perfil | displayName, bio, avatar |
+| Temas Visuales | 5 temas predefinidos |
+| Background | Color, imagen, gradiente |
+| Preview | Vista previa en tiempo real |
+
+**Definition of Done:**
+- [ ] Usuario puede personalizar su perfil
+- [ ] Temas se aplican correctamente
+
+---
+
+### v0.4.0 - SHARING + ANALYTICS
+**Objetivo:** Compartir y métricas básicas
+
+| Tarea | Descripción |
+|-------|-------------|
+| QR Code | Generar código QR |
+| vCard Export | Descargar contacto |
+| Click Tracking | Registrar clicks |
+| Visit Tracking | Registrar visitas |
+| Dashboard Analytics | Métricas básicas |
+
+**Definition of Done:**
 - [ ] QR code genera correctamente
-- [ ] Dashboard muestra estadísticas básicas
+- [ ] Analytics muestra clicks y visitas
 
 ---
 
-## v1.1.0 - Customization + Analytics
-**Duración:** 2 semanas (Sprint 2 + Sprint 3 parcial)
-**Objetivo:** Personalización completa y analytics avanzados
+### v0.5.0 - CUSTOM DOMAIN
+**Objetivo:** Dominio personalizado
 
-### Semana 4: Customization
-- [ ] Editor de perfil (displayName, bio, avatar)
-- [ ] Background personalizado (color, imagen, gradient)
-- [ ] Custom domain setup + DNS verification
-- [ ] Preview en tiempo real
+| Tarea | Descripción |
+|-------|-------------|
+| Domain Input | Usuario ingresa dominio |
+| DNS Verification | Verificar propiedad |
+| SSL Certificate | Let's Encrypt |
+| Middleware | Detectar custom domain |
 
-### Semana 5: Analytics
-- [ ] Visit tracking (device, geo, UTM)
-- [ ] Dashboard analytics completo
-- [ ] Charts (time series, pie, geo)
-- [ ] Top links table
-
-**Definition of Done v1.1:**
-- [ ] Usuario puede personalizar perfil completamente
-- [ ] Analytics muestra métricas detalladas
-- [ ] Custom domain funciona
+**Definition of Done:**
+- [ ] Perfil accesible por dominio propio
 
 ---
 
-## v1.2.0 - Social + SEO
-**Duración:** 1 semana (Sprint 3 parcial + Sprint 4)
-**Objetivo:** Integraciones sociales y SEO
+### v0.6.0 - SOCIAL + SEO
+**Objetivo:** Integraciones sociales
 
-### Semana 6: Social & SEO
-- [ ] Social links (Instagram, Twitter, YouTube, TikTok, etc)
-- [ ] Video embeds (YouTube, Vimeo, Twitch)
-- [ ] SEO meta tags dinámicos
-- [ ] Open Graph images
-- [ ] Sitemap.xml + robots.txt
+| Tarea | Descripción |
+|-------|-------------|
+| Social Links | Iconos de redes sociales |
+| Video Embeds | YouTube, Vimeo, Twitch |
+| Meta Tags | SEO dinámico |
+| Open Graph | Imágenes para compartir |
 
-**Definition of Done v1.2:**
-- [ ] Perfil muestra iconos de redes sociales
+**Definition of Done:**
+- [ ] Redes sociales aparecen en perfil
 - [ ] Videos embebidos funcionan
-- [ ] SEO verificable (Facebook Debugger, etc)
 
 ---
 
-## v1.3.0 - Advanced Links
-**Duración:** 1 semana (Sprint 7)
+### v0.7.0 - ADVANCED LINKS
 **Objetivo:** Features avanzados de links
 
-### Semana 7: Advanced Links
-- [ ] Links con password protection
-- [ ] Links con schedule (fecha inicio/fin)
-- [ ] Featured + Pinned links
-- [ ] Link preview (Open Graph metadata fetch)
-- [ ] Link click limit
+| Tarea | Descripción |
+|-------|-------------|
+| Password Protection | Proteger links con contraseña |
+| Schedule Links | Fechas de actividad |
+| Featured Links | Links destacados |
+| Pinned Links | Links fijados |
+| Link Preview | Fetch metadata |
 
-**Definition of Done v1.3:**
-- [ ] Links pueden protegerse con contraseña
-- [ ] Links pueden programarse por fecha
-- [ ] Links destacados aparecen primero
+**Definition of Done:**
+- [ ] Links con contraseña funcionan
+- [ ] Links programados se muestran/ocultan correctamente
 
 ---
 
-## v1.4.0 - E-commerce Básico
-**Duración:** 2 semanas (Sprint 5 parcial)
-**Objetivo:** Venta de productos básicos
+### v0.8.0 - E-COMMERCE BASIC
+**Objetivo:** Gestión de productos
 
-### Semana 8-9: E-commerce
-- [ ] CRUD de productos
-- [ ] Imagen y archivo (digital products)
-- [ ] Carrito de compras
-- [ ] Checkout básico
+| Tarea | Descripción |
+|-------|-------------|
+| CRUD Productos | Crear productos |
+| Image Upload | Imágenes de productos |
+| File Upload | Productos digitales |
+| Carrito | Agregar/quitar items |
+| Cart Page | Vista del carrito |
 
-**Definition of Done v1.4:**
+**Definition of Done:**
 - [ ] Usuario puede crear productos
-- [ ] Compradores pueden agregar al carrito
-- [ ] Checkout funcional (sin pagos aún)
+- [ ] Carrito funciona correctamente
 
 ---
 
-## v1.5.0 - Pagos
-**Duración:** 2 semanas (Sprint 5 parcial)
-**Objetivo:** Procesador de pagos
+### v0.9.0 - PAYMENTS
+**Objetivo:** Procesadores de pago
 
-### Semana 10: Pagos
-- [ ] Stripe checkout integration
-- [ ] Payphone integration (Ecuador)
-- [ ] PayPal integration
-- [ ] Order management
-- [ ] PDF invoice generation
+| Tarea | Descripción |
+|-------|-------------|
+| Stripe Checkout | Pagos con tarjeta |
+| Payphone | Pagos Ecuador |
+| PayPal | Pagos PayPal |
+| Order Management | Órdenes en DB |
+| PDF Invoice | Facturación |
 
-**Definition of Done v1.5:**
+**Definition of Done:**
 - [ ] Pagos con tarjeta funcionan
-- [ ] Pagos con Payphone funcionan (Ecuador)
-- [ ] Factura se genera automáticamente
+- [ ] Pagos con Payphone funcionan
+- [ ] Facturas se generan
 
 ---
 
-## v1.6.0 - Email Marketing
-**Duración:** 1 semana (Sprint 6)
-**Objetivo:** Captura y gestión de emails
+### v0.10.0 - EMAIL MARKETING
+**Objetivo:** Captura de emails
 
-### Semana 11: Email
-- [ ] Email capture form
-- [ ] Formularios customizables
-- [ ] Export to CSV
-- [ ] Mailchimp integration
+| Tarea | Descripción |
+|-------|-------------|
+| Email Capture | Formulario de suscripción |
+| Custom Forms | Formularios editables |
+| Export CSV | Descargar lista |
+| Mailchimp | Integración |
 
-**Definition of Done v1.6:**
+**Definition of Done:**
 - [ ] Visitantes pueden suscribirse
-- [ ] Usuario puede exportar emails
+- [ ] Emails exportables
 
 ---
 
-## v1.7.0 - Plugins Core
-**Duración:** 2 semanas (Sprint 8 parcial)
+### v0.11.0 - PLUGIN SYSTEM
 **Objetivo:** Sistema de plugins
 
-### Semana 12: Plugin System
-- [ ] Plugin database schema
-- [ ] Plugin loader system
-- [ ] Marketplace UI básica
-- [ ] Plugin enable/disable
+| Tarea | Descripción |
+|-------|-------------|
+| Plugin Schema | Tabla de plugins |
+| Plugin Loader | Cargar plugins |
+| Marketplace UI | Explorar plugins |
+| Install/Enable | Activar plugins |
 
-### Semana 13: Donations
-- [ ] Donation campaign setup
-- [ ] Goal tracking
-- [ ] Donation form
-- [ ] Donor list
-
-**Definition of Done v1.7:**
+**Definition of Done:**
 - [ ] Plugins pueden instalarse
-- [ ] Donations funcionan
 
 ---
 
-## v1.8.0 - Memberships
-**Duración:** 2 semanas (Sprint 8 parcial)
-**Objetivo:** Sistema de suscripciones
+### v0.12.0 - DONATIONS
+**Objetivo:** Sistema de donativos
 
-### Semana 14: Memberships
-- [ ] Create membership tiers
-- [ ] Stripe subscriptions
-- [ ] Webhook handling
-- [ ] Gated content
-- [ ] Member access control
+| Tarea | Descripción |
+|-------|-------------|
+| Campaign Setup | Configurar campaña |
+| Donation Form | Formulario de donación |
+| Goal Tracking | Meta de recaudo |
+| Donor List | Lista de donantes |
 
-**Definition of Done v1.8:**
-- [ ] Usuarios pueden crear membresías
-- [ ] Suscripciones se procesan
-- [ ] Contenido exclusivo funciona
+**Definition of Done:**
+- [ ] Donaciones funcionan
 
 ---
 
-## v1.9.0 - Rewards + Gamificación
-**Duración:** 1 semana (Sprint 9)
-**Objetivo:** Engagement del usuario
+### v0.13.0 - MEMBERSHIPS
+**Objetivo:** Sistema de membresías
 
-### Semana 15: Rewards
-- [ ] Points system
-- [ ] Referral program
-- [ ] Badges/Achievements
-- [ ] Leaderboard
+| Tarea | Descripción |
+|-------|-------------|
+| Create Tiers | Crear niveles |
+| Stripe Subs | Suscripciones Stripe |
+| Gated Content | Contenido exclusivo |
+| Access Control | Verificar membresía |
 
-**Definition of Done v1.9:**
-- [ ] Usuarios ganan puntos por acciones
+**Definition of Done:**
+- [ ] Suscripciones funcionan
+- [ ] Contenido exclusivo accesible
+
+---
+
+### v0.14.0 - REWARDS
+**Objetivo:** Gamificación
+
+| Tarea | Descripción |
+|-------|-------------|
+| Points System | Sistema de puntos |
+| Referral Program | Programa de referidos |
+| Badges | Logros |
+| Leaderboard | Ranking |
+
+**Definition of Done:**
+- [ ] Puntos se acumulan
 - [ ] Referidos otorgan recompensas
-- [ ] Badges se otorgan automáticamente
 
 ---
 
-## v2.0.0 - Team + Enterprise
-**Duración:** 2 semanas (Sprint 10 + Sprint 11 parcial)
-**Objetivo:** Colaboración en equipo
+### v0.15.0 - TEAM
+**Objetivo:** Colaboración
 
-### Semana 16: Team
-- [ ] Invite team members
-- [ ] Accept/decline invites
-- [ ] Roles (OWNER, ADMIN, EDITOR, VIEWER)
-- [ ] Permission checks
+| Tarea | Descripción |
+|-------|-------------|
+| Invite Members | Invitar usuarios |
+| Accept Invite | Aceptar invitación |
+| Roles | OWNER, ADMIN, EDITOR, VIEWER |
+| Permissions | Restringir acceso |
 
-### Semana 17: Enterprise Features
-- [ ] API access
-- [ ] Webhooks
-- [ ] White-label basics
-- [ ] Audit logs
-
-**Definition of Done v2.0:**
-- [ ] Equipos pueden colaborar
-- [ ] Roles funcionan correctamente
-- [ ] API expuesta para developers
+**Definition of Done:**
+- [ ] Equipos funcionan
+- [ ] Roles se aplican
 
 ---
 
-## v2.1.0 - Performance + Security
-**Duración:** 2 semanas (Sprint 11 parcial)
-**Objetivo:** Producción lista
+### v0.16.0 - API + WEBHOOKS
+**Objetivo:** Para developers
 
-### Semana 18: Performance
-- [ ] Lighthouse > 90
-- [ ] Image optimization
-- [ ] CDN setup
-- [ ] Caching strategy
-- [ ] Load testing
+| Tarea | Descripción |
+|-------|-------------|
+| REST API | Endpoints públicos |
+| API Keys | Autenticación API |
+| Webhooks | Notificaciones |
+| Documentation | Docs API |
 
-### Semana 19: Security
-- [ ] OWASP audit
-- [ ] Rate limiting
-- [ ] Input sanitization
-- [ ] Security headers
-- [ ] GDPR compliance
-
-**Definition of Done v2.1:**
-- [ ] Performance score > 90
-- [ ] Security audit passed
+**Definition of Done:**
+- [ ] API expuesta
+- [ ] Webhooks funcionan
 
 ---
 
-## v2.2.0 - Launch
-**Duración:** 1 semana (Sprint 11 final)
+## v1.0.0 - PRODUCCIÓN
 **Objetivo:** Lanzamiento público
 
-### Semana 20: Launch
-- [ ] Deploy a producción
-- [ ] Health checks
-- [ ] Monitoring setup
-- [ ] Error tracking
-- [ ] Documentation
-- [ ] Landing page
+| Tarea | Descripción |
+|-------|-------------|
+| Performance | Lighthouse > 90 |
+| Security | OWASP audit |
+| Testing | Unit + E2E tests |
+| CI/CD | Deploy automático |
+| Monitoring | Health checks |
+| Landing Page | Página de inicio |
 
-**Definition of Done v2.2:**
+**Definition of Done:**
 - [ ] Sistema en producción
 - [ ] Monitoreo activo
 - [ ] Docs completas
 
 ---
 
-## RESUMEN DE VERSIONES
+## RESUMEN DE VERSIONES PRE-PRODUCCIÓN
 
-| Versión | Enfoque | Duración | Semanas |
-|---------|---------|----------|---------|
-| **v1.0.0** | MVP - Core | 3 semanas | 1-3 |
-| **v1.1.0** | Customization + Analytics | 2 semanas | 4-5 |
-| **v1.2.0** | Social + SEO | 1 semana | 6 |
-| **v1.3.0** | Advanced Links | 1 semana | 7 |
-| **v1.4.0** | E-commerce Basic | 2 semanas | 8-9 |
-| **v1.5.0** | Payments | 2 semanas | 10-11 |
-| **v1.6.0** | Email Marketing | 1 semana | 12 |
-| **v1.7.0** | Plugins Core + Donations | 2 semanas | 13-14 |
-| **v1.8.0** | Memberships | 2 semanas | 15-16 |
-| **v2.0.0** | Team + Enterprise | 2 semanas | 17-18 |
-| **v2.1.0** | Performance + Security | 2 semanas | 19-20 |
-| **v2.2.0** | Launch | 1 semana | 21 |
+| Versión | Enfoque | Features Clave |
+|---------|---------|----------------|
+| **v0.1.0** | Foundation | Setup, Auth, Dashboard |
+| **v0.2.0** | Core Links | CRUD, Drag & Drop, Perfil |
+| **v0.3.0** | Customization | Perfil, Temas, Background |
+| **v0.4.0** | Sharing | QR, vCard, Analytics |
+| **v0.5.0** | Custom Domain | Dominio propio, SSL |
+| **v0.6.0** | Social + SEO | Embeds, Meta tags |
+| **v0.7.0** | Advanced Links | Password, Schedule, Pinned |
+| **v0.8.0** | E-commerce | Productos, Carrito |
+| **v0.9.0** | Payments | Stripe, Payphone, PayPal |
+| **v0.10.0** | Email | Capture, Export |
+| **v0.11.0** | Plugin System | Marketplace, Loader |
+| **v0.12.0** | Donations | Campaigns, Donors |
+| **v0.13.0** | Memberships | Tiers, Subscriptions |
+| **v0.14.0** | Rewards | Points, Referrals, Badges |
+| **v0.15.0** | Team | Multi-user, Roles |
+| **v0.16.0** | API + Webhooks | REST API, Webhooks |
+| **v1.0.0** | **PRODUCCIÓN** | Launch público |
 
-**Total: ~21 semanas (~5 meses)**
-
----
-
-## PRIORIDADES DE IMPLEMENTACIÓN
-
-### FASE 1: MVP (v1.0.0 - v1.0.3)
-- Registrar usuario ✅
-- Crear links ✅
-- Ver perfil público ✅
-- Analytics básico ✅
-
-### FASE 2: GROWTH (v1.1.0 - v1.3.0)
-- Customización
-- Analytics avanzado
-- Social embeds
-- SEO
-
-### FASE 3: MONETIZATION (v1.4.0 - v1.6.0)
-- Productos
-- Pagos
-- Email marketing
-
-### FASE 4: ENGAGEMENT (v1.7.0 - v1.9.0)
-- Plugins
-- Donations
-- Memberships
-- Rewards
-
-### FASE 5: SCALE (v2.0.0 - v2.2.0)
-- Team features
-- Enterprise
-- Launch
+**Total pre-producción: 16 versiones (v0.1.0 - v0.16.0)**
 
 ---
 
-## CHANGELOG TEMPLATE
+## ORDEN DE IMPLEMENTACIÓN
 
-```markdown
-## [Version] - YYYY-MM-DD
-
-### Added
-- New feature 1
-- New feature 2
-
-### Changed
-- Improved performance of X
-- Updated Y to use new API
-
-### Fixed
-- Bug in Z that caused...
-- Security vulnerability in...
-
-### Removed
-- Deprecated feature X
 ```
+v0.1.0 → v0.2.0 → v0.3.0 → v0.4.0 → v0.5.0 → v0.6.0
+    ↓
+v0.7.0 → v0.8.0 → v0.9.0 → v0.10.0 → v0.11.0 → v0.12.0
+    ↓
+v0.13.0 → v0.14.0 → v0.15.0 → v0.16.0 → v1.0.0 (PROD)
+```
+
+Cada versión depende de la anterior. No se salta ninguna.
 
 ---
 
