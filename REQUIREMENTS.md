@@ -83,7 +83,7 @@
 - Streaks de actividad
 - Ranks mensuales
 
-#### E-commerce
+#### E-commerce (Mini Ecommerce)
 - Venta de productos digitales
 - Carrito de compras
 - Checkout con Stripe
@@ -93,6 +93,7 @@
 - Descuentos/Cupones
 - Historial de ventas
 - Dashboard de vendedor
+- Inventory management
 
 #### Email Marketing
 - Colección de emails (opt-in)
@@ -101,7 +102,6 @@
 - Exportar lista de emails
 - Integración con Mailchimp
 - Integración con ConvertKit
-- Email automation (autoresponder)
 
 #### Embeds
 - YouTube embeds
@@ -126,7 +126,68 @@
 - Make (Integromat)
 - Pixel tracking (FB, TikTok, Google)
 
-### 1.2 Reglas de Negocio y Rate Limits
+---
+
+### 1.2 PLUGINS / MARKETPLACE
+
+Sistema de plugins para extender funcionalidades mediante integraciones de terceros.
+
+#### Core Plugins (Incluidos)
+| Plugin | Descripción |
+|--------|-------------|
+| Links | Gestión de enlaces |
+| Analytics | Métricas básicas |
+| Social Icons | Iconos de redes |
+| QR Code | Generación de QR |
+| Themes | Temas visuales |
+
+#### Featured Plugins (Pro)
+| Plugin | Descripción | Precio |
+|--------|-------------|--------|
+| Mini Ecommerce | Tienda de productos | $4.99/mes |
+| Email Marketing | Colección y automation | $2.99/mes |
+| Video Embeds | YouTube, Twitch, Vimeo | $1.99/mes |
+| Music Player | Spotify, SoundCloud | $1.99/mes |
+| Calendly | Citas y reservaciones | $2.99/mes |
+| Donations | Recibir donaciones | $2.99/mes |
+| Memberships | Contenido exclusivo | $4.99/mes |
+| Course Builder | Crear y vender cursos | $9.99/mes |
+| Reviews | Sistema de testimonios | $1.99/mes |
+| Lead Forms | Formularios avanzados | $2.99/mes |
+
+#### Integrations Plugins
+| Plugin | Descripción | Precio |
+|--------|-------------|--------|
+| Mailchimp | Email automation | $2.99/mes |
+| ConvertKit | Email marketing | $2.99/mes |
+| Zapier | Automatizaciones | $4.99/mes |
+| Google Analytics | Tracking avanzado | Free |
+| Meta Pixel | Facebook tracking | Free |
+| Notion | Sincronizar con Notion | $1.99/mes |
+| Slack | Notificaciones | Free |
+| Discord | Webhooks a Discord | Free |
+
+#### Developer Plugins
+| Plugin | Descripción | Precio |
+|--------|-------------|--------|
+| Custom CSS | CSS personalizado | $0.99/mes |
+| Custom JS | JavaScript personalizado | $0.99/mes |
+| API Access | Access a REST API | $9.99/mes |
+| Webhooks | Webhooks ilimitados | $2.99/mes |
+
+#### Plugin Marketplace Features
+- Browse plugins por categoría
+- Search plugins
+- Install con un click
+- Activate/Deactivate
+- Configuración por plugin
+- Subscriptions por plugin
+- Developer SDK
+- Ratings y reviews
+
+---
+
+### 1.3 Reglas de Negocio y Rate Limits
 
 #### Rate Limits por Plan
 
@@ -137,9 +198,9 @@
 | Links con schedule | ❌ | ✅ | ✅ | ✅ |
 | Links con password | ❌ | ✅ | ✅ | ✅ |
 | Clicks/mes | 1,000 | 10,000 | 100,000 | Ilimitados |
+| Plugins activos | 3 | 10 | 25 | Ilimitados |
 | Productos vendibles | 0 | 3 | 25 | Ilimitados |
 | Emails/mes | 100 | 1,000 | 10,000 | Ilimitados |
-| Perfiles adicionales | 0 | 0 | 3 | 10 |
 | Custom domains | 0 | 1 | 3 | Ilimitados |
 | Team members | 0 | 0 | 3 | 10 |
 | API calls/día | 0 | 100 | 1,000 | Ilimitados |
@@ -150,104 +211,72 @@
 
 | Regla | Descripción |
 |-------|-------------|
-| Username uniqueness | Username debe ser único, 3-30 chars, solo letras,números,guiones |
+| Username uniqueness | Username debe ser único, 3-30 chars |
 | URL validation | Links deben ser URLs válidas |
-| Email verification | Email debe ser verificado antes de activar cuenta |
+| Email verification | Email debe ser verificado |
 | Password requirements | Mínimo 8 chars, 1 mayúscula, 1 número |
 | Profile visibility | Perfiles pueden ser públicos o privados |
-| Content moderation | Links con contenido prohibido se eliminan |
-| Spam prevention | Rate limiting en creación de links |
-| Referral limits | Máximo 5 referidos por usuario para evitar abuso |
+| Referral limits | Máximo 5 referidos por usuario |
 | File upload | Solo imágenes (jpg, png, webp, gif), máx 5MB |
-| Custom domain | Debe verificar propiedad via DNS/CNAME |
-
-#### Límites de Seguridad
-
-| Límite | Valor |
-|--------|-------|
-| Login attempts | 5 por 15 minutos |
-| Password reset | 3 por hora |
-| API rate | 100/min (default) |
-| File uploads | 10/hora |
-| Links created | 50/día |
-
-### 1.3 Requisitos No Funcionales
-- Tiempo de carga < 3 segundos
-- Autenticación segura (JWT + bcrypt)
-- Escalabilidad (100k+ usuarios)
-- Uptime 99.9%
-- GDPR compliant
-- WCAG 2.1 AA accesibilidad
+| Plugin limits | Máximo plugins activos según plan |
 
 ---
 
 ## 2. PLANIFICACIÓN POR SPRINTS
 
 ### Sprint 0: Foundation (Semana 1)
-- Setup proyecto (Next.js + FastAPI + Prisma)
-- Autenticación básica (JWT)
-- Database schema completo
+- Setup proyecto
+- Autenticación básica
+- Database schema
 - Dashboard shell
 
 ### Sprint 1: Core Links (Semana 2)
-- CRUD links completo
-- Reordenar links (drag & drop)
-- Preview link
-- Perfil público básico
+- CRUD links
+- Reordenar links
+- Perfil público
 
 ### Sprint 2: Customization (Semana 3)
 - Temas visuales
 - Colores personalizados
-- Fondo personalizado
-- Foto de perfil
 - Custom domains
 
 ### Sprint 3: Analytics & Sharing (Semana 4)
-- Analytics clicks y views
-- QR Code generation
+- Analytics clicks
+- QR Code
 - vCard export
-- Device/geo tracking
 
 ### Sprint 4: Embeds & Integrations (Semana 5)
-- Video embeds (YouTube, Twitch, Spotify)
+- Video embeds
 - Social icons
-- SEO optimization
-- Open Graph images
 
 ### Sprint 5: Payments (Semana 6-7)
-- Stripe integration
-- Payphone integration
-- Productos digitales
-- Carrito y checkout
+- Stripe
+- Payphone
+- Mini Ecommerce
 
 ### Sprint 6: Email & Lists (Semana 8)
 - Email collection
-- Forms customizables
-- Export emails
+- Forms
 
 ### Sprint 7: Rewards System (Semana 9-10)
 - Points system
 - Referral program
-- Badges/Achievements
-- Leaderboard
 
-### Sprint 8: Team & Enterprise (Semana 11-12)
+### Sprint 8: Plugin System (Semana 11-12)
+- Plugin marketplace
+- Plugin loader
+
+### Sprint 9: Team & Enterprise (Semana 13-14)
 - Multi-user
 - Roles y permisos
-- API access
-- Webhooks
 
-### Sprint 9: Polish & Launch (Semana 13-14)
-- Performance optimization
-- Security audit
-- Testing QA
-- CI/CD setup
+### Sprint 10: Polish & Launch (Semana 15-16)
+- Testing
+- CI/CD
 
 ---
 
 ## 3. ARQUITECTURA Y STACK
-
-### Stack Tecnológico
 
 | Capa | Tecnología |
 |------|------------|
@@ -259,162 +288,10 @@
 | Auth | NextAuth.js + JWT |
 | Payments | Stripe + Payphone + PayPal |
 | Storage | AWS S3 / Cloudflare R2 |
-| Email | Resend / SendGrid |
 | Hosting | Vercel + Railway |
 
 ---
 
 ## 4. MODELO DE BASE DE DATOS
 
-### Schema Principal
-
-```
-User {
-  id, email (unique), passwordHash
-  name, avatar, phone
-  plan (FREE|BASIC|PRO|ENTERPRISE)
-  points, level, streak
-  emailVerified, twoFactorEnabled
-  createdAt, updatedAt
-}
-
-Profile {
-  id, userId
-  username (unique)
-  displayName, bio
-  theme, backgroundColor, backgroundImage, font
-  customDomain, isPublic, passwordHash
-  createdAt, updatedAt
-}
-
-Link {
-  id, profileId
-  title, url, icon, thumbnail
-  position, isActive, isFeatured, isPinned
-  category, clickLimit
-  password, scheduleStart, scheduleEnd
-  clickCount, createdAt, updatedAt
-}
-
-SocialLink {
-  id, profileId
-  platform (instagram|twitter|youtube|tiktok|etc)
-  url
-}
-
-Analytics {
-  id, linkId, profileId, sessionId
-  ip, userAgent, device, country, city
-  referrer, utmSource, utmMedium, utmCampaign
-  clickedAt
-}
-
-Reward {
-  id, userId
-  action, points
-  multiplier, createdAt
-}
-
-Badge {
-  id, name, description, icon, criteria
-}
-
-UserBadge {
-  id, userId, badgeId, earnedAt
-}
-
-Referral {
-  id, referrerId, referredId
-  rewardPoints, status, createdAt
-}
-
-DigitalCard {
-  id, userId
-  qrCode, qrLogo
-  vcardData, applePass, googlePass
-}
-
-Product {
-  id, sellerId
-  name, description, price, currency
-  fileUrl, thumbnailUrl
-  isActive, salesCount
-}
-
-Order {
-  id, buyerId, productId
-  amount, currency, status
-  stripePaymentId, payphoneId
-}
-
-EmailCapture {
-  id, profileId
-  email, source, createdAt
-}
-
-TeamMember {
-  id, profileId, userId
-  role (OWNER|ADMIN|EDITOR|VIEWER)
-}
-```
-
----
-
-## 5. ITERACIONES
-
-### Iteración 1: Backend Foundation
-- Setup FastAPI + Prisma
-- Modelos de database
-- Auth endpoints
-- CRUD users/profiles/links
-
-### Iteración 2: Frontend Foundation
-- Setup Next.js
-- UI components
-- Login/Register pages
-- Dashboard
-
-### Iteración 3: Profile Publico
-- Dynamic profile page
-- Theme rendering
-- Analytics tracking
-
-### Iteración 4: Embeds
-- Video embeds
-- Social links
-
-### Iteración 5: Payments
-- Stripe checkout
-- Payphone
-
-### Iteración 6: Rewards
-- Points backend
-- Referral logic
-- Badges
-
-### Iteración 7: Teams
-- Multi-user
-- Permissions
-
-### Iteración 8: Tests
-- Integration tests
-- E2E tests
-- Security tests
-
----
-
-## 6. CI/CD
-
-### Pipeline
-1. Lint + Type check
-2. Unit tests (70%+ coverage)
-3. Build
-4. Security scan
-5. Deploy to staging
-6. E2E tests
-7. Deploy to production
-
-### Environments
-- Development: dev.biocard.app
-- Staging: staging.biocard.app  
-- Production: biocard.app
+Entidades principales: User, Profile, Link, Analytics, Reward, Badge, DigitalCard, Product, Order, EmailCapture, TeamMember, Plugin, UserPlugin
