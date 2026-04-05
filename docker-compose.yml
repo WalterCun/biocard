@@ -1,0 +1,107 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # PostgreSQL Database
+  # ==========================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: biocard-postgres
+    environment:
+      POSTGRES_USER: biocard
+      POSTGRES_PASSWORD: biocard_dev_password
+      POSTGRES_DB: biocard_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U biocard"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==========================================
+  # Redis Cache
+  # ==========================================
+  redis:
+    image: redis:7-alpine
+    container_name: biocard-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==========================================
+  # Backend API (FastAPI)
+  # ==========================================
+  api:
+    build:
+      context: ./api
+      dockerfile: ../docker/Dockerfile.api
+    container_name: biocard-api
+    environment:
+      DATABASE_URL: postgresql://biocard:biocard_dev_password@postgres:5432/biocard_dev
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: dev_jwt_secret_change_in_production
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-sk_test_xxx}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-whsec_xxx}
+      PAYPHONE_CLIENT_ID: ${PAYPHONE_CLIENT_ID:-xxx}
+      PAYPHONE_CLIENT_SECRET: ${PAYPHONE_CLIENT_SECRET:-xxx}
+      PAYPHONE_BASE_URL: https://api.payphone.com
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./api:/app
+      - /app/__pycache__
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  # ==========================================
+  # Frontend Web (Next.js)
+  # ==========================================
+  web:
+    build:
+      context: ./web
+      dockerfile: ../docker/Dockerfile.web
+    container_name: biocard-web
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+
+  # ==========================================
+  # Adminer (Database GUI - Dev Only)
+  # ==========================================
+  adminer:
+    image: adminer:latest
+    container_name: biocard-adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  default:
+    name: biocard-network

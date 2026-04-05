@@ -1,0 +1,181 @@
+# GitHub Actions CI/CD for BioCard
+
+name: CI/CD
+
+on:
+  push:
+    branches: [main, dev, qa]
+  pull_request:
+    branches: [main, dev, qa]
+
+jobs:
+  # ==========================================
+  # BACKEND CI (Python/FastAPI)
+  # ==========================================
+  backend-ci:
+    runs-on: ubuntu-latest
+    if: contains(toJson(github.changes), 'api/') || github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('api/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          cd api
+          pip install -r requirements.txt
+          pip install ruff bandit safety
+
+      - name: Lint with Ruff
+        run: cd api && ruff check .
+
+      - name: Security scan with Bandit
+        run: cd api && bandit -r .
+
+      - name: Dependency check with Safety
+        run: cd api && safety check
+
+      - name: Run tests with pytest
+        run: |
+          cd api
+          pytest --cov=src --cov-report=xml
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./api/coverage.xml
+
+  # ==========================================
+  # FRONTEND CI (Node.js/Next.js)
+  # ==========================================
+  frontend-ci:
+    runs-on: ubuntu-latest
+    if: contains(toJson(github.changes), 'web/') || github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        run: cd web && npm ci
+
+      - name: Lint with ESLint
+        run: cd web && npm run lint
+
+      - name: Build Next.js
+        run: cd web && npm run build
+
+      - name: Run tests
+        run: cd web && npm run test:ci
+
+      - name: Security audit
+        run: cd web && npm audit --audit-level=high
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          directory: ./web/coverage
+
+  # ==========================================
+  # DOCKER BUILD
+  # ==========================================
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: [backend-ci, frontend-ci]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker images
+        run: |
+          docker build -t biocard/api:${{ github.sha }} -f docker/Dockerfile.api .
+          docker build -t biocard/web:${{ github.sha }} -f docker/Dockerfile.web .
+
+      - name: Run Trivy scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: .
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+
+  # ==========================================
+  # DEPLOY TO STAGING (on dev push)
+  # ==========================================
+  deploy-staging:
+    runs-on: ubuntu-latest
+    needs: [docker-build]
+    if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway link ${{ secrets.RAILWAY_PROJECT_ID }}
+          railway deploy
+
+  # ==========================================
+  # DEPLOY TO PRODUCTION (on main push)
+  # ==========================================
+  deploy-production:
+    runs-on: ubuntu-latest
+    needs: [docker-build]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: BioCard Release v${{ github.run_number }}
+          draft: false
+          prerelease: false
+
+      - name: Deploy to Production
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway link ${{ secrets.RAILWAY_PRODUCTION_ID }}
+          railway deploy
+
+# ==========================================
+# MANUAL DEPLOYMENT
+# ==========================================
+workflow_dispatch:
+  inputs:
+    environment:
+      description: 'Environment'
+      required: true
+      default: 'staging'
+      type: choice
+      options:
+        - staging
+        - production

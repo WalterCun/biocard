@@ -1,0 +1,76 @@
+# BioCard .gitignore
+
+# ==========================================
+# Python
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+dist/
+build/
+*.egg
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+
+# ==========================================
+# Node.js
+# ==========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.next/
+out/
+dist/
+build/
+*.tsbuildinfo
+.next.zip
+
+# Testing
+coverage/
+
+# ==========================================
+# Database
+# ==========================================
+*.db
+*.sqlite3
+*.sql
+
+# ==========================================
+# Docker
+# ==========================================
+.dockerignore
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets (no commits!)
+*.pem
+*.key
+credentials.json
+service-account.json
