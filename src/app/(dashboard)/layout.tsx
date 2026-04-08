@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import Link from 'next/link';
-import { LayoutDashboard, Link as LinkIcon, BarChart3, Settings, User, LogOut } from 'lucide-react';
+import { LayoutDashboard, Link as LinkIcon, BarChart3, Settings, User, LogOut, Share2 } from 'lucide-react';
 
 export default async function DashboardLayout({
   children,
@@ -17,9 +17,10 @@ export default async function DashboardLayout({
 
   const navItems = [
     { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { href: '/links', icon: LinkIcon, label: 'Links' },
-    { href: '/analytics', icon: BarChart3, label: 'Analytics' },
-    { href: '/settings', icon: Settings, label: 'Settings' },
+    { href: '/dashboard/links', icon: LinkIcon, label: 'Links' },
+    { href: '/dashboard/share', icon: Share2, label: 'Share' },
+    { href: '/dashboard/analytics', icon: BarChart3, label: 'Analytics' },
+    { href: '/dashboard/settings/profile', icon: Settings, label: 'Settings' },
   ];
 
   return (
