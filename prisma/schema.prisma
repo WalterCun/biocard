@@ -136,6 +136,8 @@ model Link {
   profileId     String
   title         String
   url           String
+  linkType      String    @default("link") // link, youtube, twitter, instagram, tiktok, spotify, linkedin, github
+  embedData     Json?     // { videoId, platform, thumbnail, title, etc }
   icon          String?   // Emoji
   thumbnail     String?
   position      Int       @default(0)

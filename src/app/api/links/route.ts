@@ -1,14 +1,15 @@
-import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import prisma from '@/lib/db';
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import prisma from "@/lib/db";
+import { detectLinkType, getEmbedData } from "./types/route";
 
 export async function GET(req: Request) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.email) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+      return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
     const profile = await prisma.profile.findUnique({
@@ -16,27 +17,33 @@ export async function GET(req: Request) {
     });
 
     if (!profile) {
-      return NextResponse.json({ error: 'Perfil no encontrado' }, { status: 404 });
+      return NextResponse.json(
+        { error: "Perfil no encontrado" },
+        { status: 404 },
+      );
     }
 
     const links = await prisma.link.findMany({
       where: { profileId: profile.id },
-      orderBy: { position: 'asc' },
+      orderBy: { position: "asc" },
     });
 
     return NextResponse.json(links);
   } catch (error) {
-    console.error('Error fetching links:', error);
-    return NextResponse.json({ error: 'Error al obtener links' }, { status: 500 });
+    console.error("Error fetching links:", error);
+    return NextResponse.json(
+      { error: "Error al obtener links" },
+      { status: 500 },
+    );
   }
 }
 
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.email) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+      return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
     const profile = await prisma.profile.findUnique({
@@ -44,16 +51,32 @@ export async function POST(req: Request) {
     });
 
     if (!profile) {
-      return NextResponse.json({ error: 'Perfil no encontrado' }, { status: 404 });
+      return NextResponse.json(
+        { error: "Perfil no encontrado" },
+        { status: 404 },
+      );
     }
 
     const body = await req.json();
-    const { title, url, icon, thumbnail, category, isFeatured, isPinned } = body;
+    const {
+      title,
+      url,
+      icon,
+      thumbnail,
+      category,
+      isFeatured,
+      isPinned,
+      linkType,
+    } = body;
+
+    // Auto-detect link type if not provided
+    const detectedType = linkType || detectLinkType(url);
+    const embedData = getEmbedData(url, detectedType);
 
     // Obtener la posición más alta
     const lastLink = await prisma.link.findFirst({
       where: { profileId: profile.id },
-      orderBy: { position: 'desc' },
+      orderBy: { position: "desc" },
     });
 
     const newPosition = lastLink ? lastLink.position + 1 : 0;
@@ -63,6 +86,8 @@ export async function POST(req: Request) {
         profileId: profile.id,
         title,
         url,
+        linkType: detectedType,
+        embedData,
         icon,
         thumbnail,
         category,
@@ -74,7 +99,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(link);
   } catch (error) {
-    console.error('Error creating link:', error);
-    return NextResponse.json({ error: 'Error al crear link' }, { status: 500 });
+    console.error("Error creating link:", error);
+    return NextResponse.json({ error: "Error al crear link" }, { status: 500 });
   }
 }

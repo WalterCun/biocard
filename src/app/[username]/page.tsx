@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import prisma from "@/lib/db";
+import { ProfileLinks } from "@/components/ProfileLinks";
 
 interface Props {
   params: Promise<{ username: string }>;
@@ -128,61 +129,7 @@ export default async function PublicProfilePage({ params }: Props) {
 
       {/* Links */}
       <div className="container mx-auto px-4 max-w-md">
-        {profile.links.length === 0 ? (
-          <p className="text-center opacity-60">No hay enlaces todavía</p>
-        ) : (
-          <div className="space-y-4">
-            {Object.entries(categories).map(([category, links]) => (
-              <div key={category} className="space-y-3">
-                {links.map((link) => (
-                  <a
-                    key={link.id}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`block p-4 ${styles.card} hover:opacity-90 rounded-xl transition-all hover:scale-[1.02] border ${styles.cardBorder}`}
-                    style={{
-                      borderColor: styles.cardBorder.includes("border-")
-                        ? undefined
-                        : styles.cardBorder,
-                    }}
-                  >
-                    <div className="flex items-center gap-4">
-                      {link.thumbnail ? (
-                        <img
-                          src={link.thumbnail}
-                          alt={link.title}
-                          className="w-12 h-12 rounded-lg object-cover"
-                        />
-                      ) : link.icon ? (
-                        <span className="text-2xl">{link.icon}</span>
-                      ) : (
-                        <div
-                          className="w-12 h-12 rounded-lg flex items-center justify-center"
-                          style={{
-                            backgroundColor:
-                              styles.accent.replace("border-", "") + "33",
-                          }}
-                        >
-                          🔗
-                        </div>
-                      )}
-                      <div className="flex-1">
-                        <h3 className="font-semibold">{link.title}</h3>
-                        {link.category && (
-                          <span className="text-xs opacity-60 uppercase">
-                            {link.category}
-                          </span>
-                        )}
-                      </div>
-                      {link.isPinned && <span>📌</span>}
-                    </div>
-                  </a>
-                ))}
-              </div>
-            ))}
-          </div>
-        )}
+        <ProfileLinks links={profile.links} theme={profile.theme} />
       </div>
 
       {/* Footer */}

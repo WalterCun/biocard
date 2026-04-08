@@ -1,13 +1,17 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { LinkTypeSelector } from "./LinkTypeSelector";
+import { LinkEmbedPreview } from "./LinkEmbedPreview";
 
 interface LinkFormProps {
   link?: {
     id: string;
     title: string;
     url: string;
+    linkType?: string;
+    embedData?: any;
     icon?: string;
     thumbnail?: string;
     category?: string;
@@ -19,21 +23,22 @@ interface LinkFormProps {
 }
 
 const CATEGORIES = [
-  { value: 'social', label: 'Social' },
-  { value: 'portfolio', label: 'Portfolio' },
-  { value: 'shop', label: 'Tienda' },
-  { value: 'contact', label: 'Contacto' },
-  { value: 'other', label: 'Otro' },
+  { value: "social", label: "Social" },
+  { value: "portfolio", label: "Portfolio" },
+  { value: "shop", label: "Tienda" },
+  { value: "contact", label: "Contacto" },
+  { value: "other", label: "Otro" },
 ];
 
 export default function LinkForm({ link, onSuccess, onCancel }: LinkFormProps) {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    title: link?.title || '',
-    url: link?.url || '',
-    icon: link?.icon || '',
-    thumbnail: link?.thumbnail || '',
-    category: link?.category || 'other',
+    title: link?.title || "",
+    url: link?.url || "",
+    linkType: link?.linkType || "link",
+    icon: link?.icon || "",
+    thumbnail: link?.thumbnail || "",
+    category: link?.category || "other",
     isFeatured: link?.isFeatured || false,
     isPinned: link?.isPinned || false,
   });
@@ -43,21 +48,21 @@ export default function LinkForm({ link, onSuccess, onCancel }: LinkFormProps) {
     setLoading(true);
 
     try {
-      const method = link ? 'PUT' : 'POST';
-      const url = link ? `/api/links/${link.id}` : '/api/links';
-      
+      const method = link ? "PUT" : "POST";
+      const url = link ? `/api/links/${link.id}` : "/api/links";
+
       const res = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
-      if (!res.ok) throw new Error('Error saving link');
-      
+      if (!res.ok) throw new Error("Error saving link");
+
       onSuccess();
     } catch (error) {
-      console.error('Error:', error);
-      alert('Error al guardar');
+      console.error("Error:", error);
+      alert("Error al guardar");
     } finally {
       setLoading(false);
     }
@@ -65,6 +70,18 @@ export default function LinkForm({ link, onSuccess, onCancel }: LinkFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium mb-1">Tipo de enlace</label>
+        <LinkTypeSelector
+          value={formData.linkType}
+          onChange={(type) => setFormData({ ...formData, linkType: type })}
+        />
+      </div>
+
+      {["youtube", "spotify", "tiktok", "twitter", "instagram"].includes(
+        formData.linkType,
+      ) && <LinkEmbedPreview url={formData.url} linkType={formData.linkType} />}
+
       <div>
         <label className="block text-sm font-medium mb-1">Título</label>
         <input
@@ -91,7 +108,9 @@ export default function LinkForm({ link, onSuccess, onCancel }: LinkFormProps) {
         <label className="block text-sm font-medium mb-1">Categoría</label>
         <select
           value={formData.category}
-          onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, category: e.target.value })
+          }
           className="w-full p-2 rounded border bg-gray-800 border-gray-700 text-white"
         >
           {CATEGORIES.map((cat) => (
@@ -118,7 +137,9 @@ export default function LinkForm({ link, onSuccess, onCancel }: LinkFormProps) {
         <input
           type="url"
           value={formData.thumbnail}
-          onChange={(e) => setFormData({ ...formData, thumbnail: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, thumbnail: e.target.value })
+          }
           className="w-full p-2 rounded border bg-gray-800 border-gray-700 text-white"
         />
       </div>
@@ -128,7 +149,9 @@ export default function LinkForm({ link, onSuccess, onCancel }: LinkFormProps) {
           <input
             type="checkbox"
             checked={formData.isFeatured}
-            onChange={(e) => setFormData({ ...formData, isFeatured: e.target.checked })}
+            onChange={(e) =>
+              setFormData({ ...formData, isFeatured: e.target.checked })
+            }
           />
           Destacado
         </label>
@@ -136,7 +159,9 @@ export default function LinkForm({ link, onSuccess, onCancel }: LinkFormProps) {
           <input
             type="checkbox"
             checked={formData.isPinned}
-            onChange={(e) => setFormData({ ...formData, isPinned: e.target.checked })}
+            onChange={(e) =>
+              setFormData({ ...formData, isPinned: e.target.checked })
+            }
           />
           Fijar
         </label>
@@ -144,7 +169,7 @@ export default function LinkForm({ link, onSuccess, onCancel }: LinkFormProps) {
 
       <div className="flex gap-2">
         <Button type="submit" disabled={loading}>
-          {loading ? 'Guardando...' : link ? 'Actualizar' : 'Crear'}
+          {loading ? "Guardando..." : link ? "Actualizar" : "Crear"}
         </Button>
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancelar
