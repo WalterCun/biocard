@@ -34,6 +34,7 @@ model User {
   memberships   Subscription[]
   teamMemberships TeamMember[]
   apiKeys       ApiKey[]
+  webhooks     Webhook[]
   rewards       Reward[]
   badges        UserBadge[]
   referredBy    Referral[]  @relation("Referrer")
