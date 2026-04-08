@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ProfileEditor } from '@/components/ProfileEditor';
 import { ThemeSelector } from '@/components/ThemeSelector';
+import { DomainSettings } from '@/components/DomainSettings';
+import { TeamSettings } from '@/components/TeamSettings';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface Profile {
@@ -89,6 +91,8 @@ export default function ProfileSettingsPage() {
         <TabsList>
           <TabsTrigger value="profile">Perfil</TabsTrigger>
           <TabsTrigger value="appearance">Apariencia</TabsTrigger>
+          <TabsTrigger value="domain">Dominio</TabsTrigger>
+          <TabsTrigger value="team">Equipo</TabsTrigger>
         </TabsList>
 
         <TabsContent value="profile">
@@ -105,6 +109,14 @@ export default function ProfileSettingsPage() {
               onSelect={(themeId) => handleSave({ theme: themeId })}
             />
           </div>
+        </TabsContent>
+
+        <TabsContent value="domain">
+          <DomainSettings />
+        </TabsContent>
+
+        <TabsContent value="team">
+          <TeamSettings />
         </TabsContent>
       </Tabs>
     </div>

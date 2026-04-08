@@ -14,6 +14,7 @@ import {
   Line,
 } from "recharts";
 import { MousePointer2, Link2, Eye, Globe } from "lucide-react";
+import { RealtimeStats } from "./RealtimeStats";
 
 interface AnalyticsData {
   summary: {
@@ -86,6 +87,9 @@ export function AnalyticsDashboard({ profileId }: AnalyticsDashboardProps) {
 
   return (
     <div className="space-y-6">
+      {/* Realtime Stats */}
+      <RealtimeStats />
+
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
