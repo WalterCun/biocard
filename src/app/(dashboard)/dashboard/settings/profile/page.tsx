@@ -6,6 +6,7 @@ import { ProfileEditor } from '@/components/ProfileEditor';
 import { ThemeSelector } from '@/components/ThemeSelector';
 import { DomainSettings } from '@/components/DomainSettings';
 import { TeamSettings } from '@/components/TeamSettings';
+import { SocialLinksEditor } from '@/components/SocialLinksEditor';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface Profile {
@@ -112,6 +113,7 @@ export default function ProfileSettingsPage() {
         <TabsList>
           <TabsTrigger value="profile">Perfil</TabsTrigger>
           <TabsTrigger value="appearance">Apariencia</TabsTrigger>
+          <TabsTrigger value="social">Social</TabsTrigger>
           <TabsTrigger value="domain">Dominio</TabsTrigger>
           <TabsTrigger value="team">Equipo</TabsTrigger>
         </TabsList>
@@ -131,6 +133,10 @@ export default function ProfileSettingsPage() {
               onSelect={(themeId) => handleSave({ theme: themeId })}
             />
           </div>
+        </TabsContent>
+
+        <TabsContent value="social">
+          <SocialLinksEditor />
         </TabsContent>
 
         <TabsContent value="domain">

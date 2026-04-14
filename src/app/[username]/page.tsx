@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import prisma from "@/lib/db";
 import { ProfileLinks } from "@/components/ProfileLinks";
+import { SocialLinks } from "@/components/SocialLinks";
 
 interface Props {
   params: Promise<{ username: string }>;
@@ -59,6 +60,7 @@ async function getProfileAndLinks(username: string) {
         where: { isActive: true },
         orderBy: [{ isPinned: "desc" }, { position: "asc" }],
       },
+      socialLinks: true,
     },
   });
 
@@ -82,17 +84,6 @@ export default async function PublicProfilePage({ params }: Props) {
         backgroundPosition: "center",
       }
     : {};
-
-  // Categorías de links
-  const categories = profile.links.reduce(
-    (acc, link) => {
-      const cat = link.category || "other";
-      if (!acc[cat]) acc[cat] = [];
-      acc[cat].push(link);
-      return acc;
-    },
-    {} as Record<string, typeof profile.links>,
-  );
 
   return (
     <div
@@ -124,6 +115,13 @@ export default async function PublicProfilePage({ params }: Props) {
         </h1>
         {profile.bio && (
           <p className="opacity-80 max-w-md mx-auto mb-6">{profile.bio}</p>
+        )}
+        
+        {/* Social Links */}
+        {profile.socialLinks && profile.socialLinks.length > 0 && (
+          <div className="flex justify-center gap-3 mb-6">
+            <SocialLinks links={profile.socialLinks} theme={profile.theme} />
+          </div>
         )}
       </div>
 

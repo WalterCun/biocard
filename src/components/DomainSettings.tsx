@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Globe, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
+import { Globe, CheckCircle, XCircle, AlertTriangle, RefreshCw } from "lucide-react";
 
 interface DomainConfig {
   customDomain: string | null;
@@ -16,6 +16,7 @@ export function DomainSettings() {
   const [domain, setDomain] = useState("");
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [verifying, setVerifying] = useState(false);
   const [config, setConfig] = useState<DomainConfig | null>(null);
   const [message, setMessage] = useState<{
     type: "success" | "error";
@@ -73,6 +74,34 @@ export function DomainSettings() {
     }
   };
 
+  const handleVerify = async () => {
+    setVerifying(true);
+    setMessage(null);
+    try {
+      const res = await fetch("/api/profiles/verify-domain", {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (res.ok && data.verified) {
+        setConfig({ ...config!, domainVerified: true });
+        setMessage({
+          type: "success",
+          text: data.message || "Dominio verificado",
+        });
+      } else {
+        setMessage({
+          type: "error",
+          text: data.message || "Verificación fallida",
+        });
+      }
+      await fetchDomain();
+    } catch (error) {
+      setMessage({ type: "error", text: "Error de conexión" });
+    } finally {
+      setVerifying(false);
+    }
+  };
+
   const handleRemove = async () => {
     setSaving(true);
     setMessage(null);
@@ -124,13 +153,27 @@ export function DomainSettings() {
               </Alert>
             )}
 
-            <Button
-              variant="destructive"
-              onClick={handleRemove}
-              disabled={saving}
-            >
-              Eliminar dominio
-            </Button>
+            <div className="flex gap-2">
+              {!config.domainVerified && (
+                <Button
+                  variant="outline"
+                  onClick={handleVerify}
+                  disabled={verifying}
+                >
+                  <RefreshCw
+                    className={`w-4 h-4 mr-2 ${verifying ? "animate-spin" : ""}`}
+                  />
+                  {verifying ? "Verificando..." : "Verificar dominio"}
+                </Button>
+              )}
+              <Button
+                variant="destructive"
+                onClick={handleRemove}
+                disabled={saving}
+              >
+                Eliminar dominio
+              </Button>
+            </div>
           </>
         ) : (
           <>
