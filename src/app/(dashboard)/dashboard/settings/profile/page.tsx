@@ -21,14 +21,23 @@ interface Profile {
   isPublic: boolean;
 }
 
+interface Link {
+  id: string;
+  title: string;
+  url: string;
+  icon?: string;
+}
+
 export default function ProfileSettingsPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [links, setLinks] = useState<Link[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchProfile();
+    fetchLinks();
   }, []);
 
   const fetchProfile = async () => {
@@ -48,6 +57,18 @@ export default function ProfileSettingsPage() {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchLinks = async () => {
+    try {
+      const res = await fetch('/api/links');
+      if (res.ok) {
+        const data = await res.json();
+        setLinks(data);
+      }
+    } catch (err) {
+      console.error('Error fetching links:', err);
     }
   };
 
@@ -99,6 +120,7 @@ export default function ProfileSettingsPage() {
           <ProfileEditor
             profile={profile}
             onSave={handleSave}
+            links={links}
           />
         </TabsContent>
 
