@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { QRCodeModal } from "@/components/QRCodeModal";
-import { vCardButton } from "@/components/vCardButton";
+import { VCardButton } from "@/components/VCardButton";
 import { Download, Share2, QrCode, Contact } from "lucide-react";
 
 interface ShareButtonsProps {
@@ -38,7 +38,7 @@ export function ShareButtons({ username }: ShareButtonsProps) {
               Código QR
             </Button>
 
-            <vCardButton username={username} />
+            <VCardButton username={username} />
           </div>
 
           <div className="pt-2">

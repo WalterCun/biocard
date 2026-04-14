@@ -2,14 +2,25 @@
 
 interface Link {
   id: string;
+  createdAt: Date;
+  profileId: string;
+  updatedAt: Date;
   title: string;
   url: string;
   linkType: string;
   embedData: any;
   icon: string | null;
   thumbnail: string | null;
-  category: string | null;
+  position: number;
+  isActive: boolean;
+  isFeatured: boolean;
   isPinned: boolean;
+  category: string | null;
+  clickLimit: number | null;
+  clickCount: number;
+  password: string | null;
+  scheduleStart: Date | null;
+  scheduleEnd: Date | null;
 }
 
 interface ProfileLinksProps {

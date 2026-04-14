@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/db";
-import { detectLinkType, getEmbedData } from "./types/route";
+import { detectLinkType, getEmbedData } from "@/lib/link-types";
 
 export async function GET(req: Request) {
   try {
@@ -13,7 +13,7 @@ export async function GET(req: Request) {
     }
 
     const profile = await prisma.profile.findUnique({
-      where: { userEmail: session.user.email },
+      where: { userId: session.user.id },
     });
 
     if (!profile) {
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
     }
 
     const profile = await prisma.profile.findUnique({
-      where: { userEmail: session.user.email },
+      where: { userId: session.user.id },
     });
 
     if (!profile) {

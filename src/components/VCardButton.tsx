@@ -3,11 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { Download, Contact } from "lucide-react";
 
-interface vCardButtonProps {
+interface VCardButtonProps {
   username: string;
 }
 
-export function vCardButton({ username }: vCardButtonProps) {
+export function VCardButton({ username }: VCardButtonProps) {
   const handleDownload = () => {
     window.open(`/api/profiles/${username}/vcard`, "_blank");
   };

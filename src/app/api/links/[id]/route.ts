@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/db";
-import { detectLinkType, getEmbedData } from "../types/route";
+import { detectLinkType, getEmbedData } from "@/lib/link-types";
 
 export async function PUT(
   req: Request,
@@ -16,7 +16,7 @@ export async function PUT(
     }
 
     const profile = await prisma.profile.findUnique({
-      where: { userEmail: session.user.email },
+      where: { userId: session.user.id },
     });
 
     if (!profile) {
@@ -54,10 +54,10 @@ export async function PUT(
 
     // Auto-detect link type and generate embed data if URL changed
     const detectedType =
-      linkType || (url ? detectLinkType(url) : existingLink.linkType);
+      linkType || (url ? detectLinkType(url) : (existingLink as any).linkType);
     const embedData = url
       ? getEmbedData(url, detectedType)
-      : existingLink.embedData;
+      : (existingLink as any).embedData;
 
     const link = await prisma.link.update({
       where: { id },
@@ -97,7 +97,7 @@ export async function DELETE(
     }
 
     const profile = await prisma.profile.findUnique({
-      where: { userEmail: session.user.email },
+      where: { userId: session.user.id },
     });
 
     if (!profile) {

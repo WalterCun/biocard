@@ -12,7 +12,7 @@ export async function GET(req: Request) {
     }
 
     const profile = await prisma.profile.findUnique({
-      where: { userEmail: session.user.email },
+      where: { userId: session.user.id },
     });
 
     if (!profile) {
@@ -67,7 +67,7 @@ export async function GET(req: Request) {
     });
 
     // Daily visits for the last 7 days
-    const dailyVisits = await prisma.$queryRaw`
+    const dailyVisits: any = await prisma.$queryRaw`
       SELECT DATE(created_at) as date, COUNT(*) as count
       FROM analytics
       WHERE profile_id = ${profile.id}
@@ -78,7 +78,7 @@ export async function GET(req: Request) {
     `;
 
     // Daily clicks for the last 7 days
-    const dailyClicks = await prisma.$queryRaw`
+    const dailyClicks: any = await prisma.$queryRaw`
       SELECT DATE(created_at) as date, COUNT(*) as count
       FROM analytics
       WHERE profile_id = ${profile.id}

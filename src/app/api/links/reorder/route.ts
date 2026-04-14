@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     }
 
     const profile = await prisma.profile.findUnique({
-      where: { userEmail: session.user.email },
+      where: { userId: session.user.id },
     });
 
     if (!profile) {

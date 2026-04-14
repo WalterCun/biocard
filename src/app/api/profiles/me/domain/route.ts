@@ -12,7 +12,7 @@ export async function GET() {
     }
 
     const profile = await prisma.profile.findUnique({
-      where: { userEmail: session.user.email },
+      where: { userId: session.user.id },
       select: {
         customDomain: true,
         domainVerified: true,
@@ -38,7 +38,7 @@ export async function PUT(req: Request) {
     }
 
     const profile = await prisma.profile.findUnique({
-      where: { userEmail: session.user.email },
+      where: { userId: session.user.id },
     });
 
     if (!profile) {
@@ -108,7 +108,7 @@ export async function DELETE() {
     }
 
     const profile = await prisma.profile.findUnique({
-      where: { userEmail: session.user.email },
+      where: { userId: session.user.id },
     });
 
     if (!profile) {

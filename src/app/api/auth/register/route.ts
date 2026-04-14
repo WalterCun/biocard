@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import { db } from '@/lib/db';
+import prisma from '@/lib/db';
 
 export async function POST(req: Request) {
   try {
@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     }
 
     // Check if user already exists
-    const existingUser = await db.user.findUnique({
+    const existingUser = await prisma.user.findUnique({
       where: { email },
     });
 
@@ -29,7 +29,7 @@ export async function POST(req: Request) {
 
     // Check if username is taken (if provided)
     if (username) {
-      const existingProfile = await db.profile.findUnique({
+      const existingProfile = await prisma.profile.findUnique({
         where: { username },
       });
 
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     const hashedPassword = await bcrypt.hash(password, 12);
 
     // Create user and profile in transaction
-    const user = await db.$transaction(async (tx) => {
+    const user = await prisma.$transaction(async (tx) => {
       // Create user
       const newUser = await tx.user.create({
         data: {
