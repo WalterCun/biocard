@@ -1,120 +1,216 @@
-import Link from 'next/link';
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { 
+  Link2, 
+  QrCode, 
+  BarChart3, 
+  Globe, 
+  Palette, 
+  Zap,
+  ArrowRight,
+  CheckCircle2
+} from "lucide-react";
 
-export default function HomePage() {
+export default function LandingPage() {
+  const features = [
+    {
+      icon: Link2,
+      title: "Enlaces Ilimitados",
+      description: "Crea todos los enlaces que necesites y organízalos fácil"
+    },
+    {
+      icon: Palette,
+      title: "Personalización Total",
+      description: "Temas, colores, fuentes y fondo personalizado"
+    },
+    {
+      icon: QrCode,
+      title: "QR Code & vCard",
+      description: "Comparte tu perfil con códigos QR y contactos digitales"
+    },
+    {
+      icon: BarChart3,
+      title: "Analíticas",
+      description: "Mira quién visita tu perfil y hace click en tus enlaces"
+    },
+    {
+      icon: Globe,
+      title: "Dominio Personalizado",
+      description: "Usa tu propio dominio para tu perfil de BioCard"
+    },
+    {
+      icon: Zap,
+      title: "Ecommerce & Pagos",
+      description: "Vende productos y recibe pagos directamente"
+    }
+  ];
+
+  const plans = [
+    {
+      name: "Free",
+      price: "$0",
+      period: "/mes",
+      features: [
+        "5 enlaces",
+        "1 perfil público",
+        "QR Code básico",
+        "Analíticas simples"
+      ],
+      cta: "Comenzar Gratis",
+      popular: false
+    },
+    {
+      name: "Pro",
+      price: "$9",
+      period: "/mes",
+      features: [
+        "Enlaces ilimitados",
+        "Dominio personalizado",
+        "Analíticas avanzadas",
+        "Productos & pagos",
+        "Soporte prioritario"
+      ],
+      cta: "升级 a Pro",
+      popular: true
+    },
+    {
+      name: "Enterprise",
+      price: "$29",
+      period: "/mes",
+      features: [
+        "Todo en Pro",
+        "Múltiples perfiles",
+        "Team collaboration",
+        "API access",
+        "White-label"
+      ],
+      cta: "Contactanos",
+      popular: false
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900">
-      {/* Hero */}
-      <section className="relative py-20 px-4">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20" />
-        
-        <div className="relative max-w-4xl mx-auto text-center">
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
-            Tu Link in Bio
-            <span className="block text-amber-400">y Tarjeta Digital</span>
-          </h1>
-          
-          <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            La plataforma todo-en-uno para creadores y negocios en Latinoamérica
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link 
-              href="/register"
-              className="px-8 py-4 bg-amber-500 hover:bg-amber-400 text-gray-900 font-semibold rounded-full transition-all"
-            >
-              Comenzar Gratis
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="border-b">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="text-2xl font-bold">BioCard</div>
+          <nav className="hidden md:flex items-center gap-6">
+            <Link href="#features" className="text-muted-foreground hover:text-foreground">
+              Features
             </Link>
-            <Link 
-              href="#features"
-              className="px-8 py-4 border-2 border-white/30 text-white font-semibold rounded-full hover:bg-white/10"
-            >
-              Ver Features
+            <Link href="#pricing" className="text-muted-foreground hover:text-foreground">
+              Precios
+            </Link>
+          </nav>
+          <div className="flex items-center gap-2">
+            <Link href="/login">
+              <Button variant="ghost">Login</Button>
+            </Link>
+            <Link href="/register">
+              <Button>Comenzar</Button>
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero */}
+      <section className="py-20 md:py-32">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            Tu enlace personal en un solo lugar
+          </h1>
+          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            Crea tu página de enlaces profesional. Comparte tu bio, acepta pagos, 
+            analiza métricas y mucho más.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/register">
+              <Button size="lg" className="text-lg px-8">
+                Crear mi BioCard <ArrowRight className="ml-2" />
+              </Button>
             </Link>
           </div>
         </div>
       </section>
 
       {/* Features */}
-      <section id="features" className="py-20 px-4 bg-gray-900/50">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-4xl font-bold text-white text-center mb-12">Todo lo que necesitas</h2>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="p-6 bg-gray-800 rounded-2xl">
-              <div className="w-12 h-12 bg-purple-500 rounded-lg mb-4 flex items-center justify-center text-2xl">🔗</div>
-              <h3 className="text-xl font-semibold text-white mb-2">Links Ilimitados</h3>
-              <p className="text-gray-400">Crea todos los enlaces que necesites</p>
-            </div>
-            
-            <div className="p-6 bg-gray-800 rounded-2xl">
-              <div className="w-12 h-12 bg-amber-500 rounded-lg mb-4 flex items-center justify-center text-2xl">🎨</div>
-              <h3 className="text-xl font-semibold text-white mb-2">Temas Personalizados</h3>
-              <p className="text-gray-400">Elige o crea tu propio tema</p>
-            </div>
-            
-            <div className="p-6 bg-gray-800 rounded-2xl">
-              <div className="w-12 h-12 bg-pink-500 rounded-lg mb-4 flex items-center justify-center text-2xl">📊</div>
-              <h3 className="text-xl font-semibold text-white mb-2">Analytics</h3>
-              <p className="text-gray-400">Conoce tu audiencia</p>
-            </div>
+      <section id="features" className="py-20 bg-muted/50">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Todo lo que necesitas
+          </h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {features.map((feature, i) => (
+              <Card key={i}>
+                <CardContent className="p-6">
+                  <feature.icon className="w-10 h-10 mb-4 text-primary" />
+                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                  <p className="text-muted-foreground">{feature.description}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Pricing */}
-      <section className="py-20 px-4">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-4xl font-bold text-white text-center mb-12">Precios simples</h2>
-          
-          <div className="grid md:grid-cols-4 gap-6">
-            <div className="p-6 bg-gray-800 rounded-2xl border border-gray-700">
-              <h3 className="text-lg font-semibold text-white mb-2">Free</h3>
-              <div className="text-3xl font-bold text-white mb-4">$0<span className="text-sm text-gray-400">/mes</span></div>
-              <ul className="space-y-2 text-gray-400 text-sm mb-4">
-                <li>✅ 5 links</li>
-                <li>✅ Temas básicos</li>
-                <li>✅ QR Code</li>
-              </ul>
-              <Link href="/register" className="block text-center py-2 bg-gray-700 text-white rounded-lg">Comenzar</Link>
-            </div>
-            
-            <div className="p-6 bg-gray-800 rounded-2xl border border-purple-500">
-              <div className="text-xs text-purple-400 mb-1">MÁS VENDIDO</div>
-              <h3 className="text-lg font-semibold text-white mb-2">Basic</h3>
-              <div className="text-3xl font-bold text-white mb-4">$3.99<span className="text-sm text-gray-400">/mes</span></div>
-              <ul className="space-y-2 text-gray-400 text-sm mb-4">
-                <li>✅ 25 links</li>
-                <li>✅ Todos los temas</li>
-                <li>✅ Analytics</li>
-                <li>✅ Custom domain</li>
-              </ul>
-              <Link href="/register" className="block text-center py-2 bg-purple-600 text-white rounded-lg">Comenzar</Link>
-            </div>
-            
-            <div className="p-6 bg-gray-800 rounded-2xl border border-gray-700">
-              <h3 className="text-lg font-semibold text-white mb-2">Pro</h3>
-              <div className="text-3xl font-bold text-white mb-4">$7.99<span className="text-sm text-gray-400">/mes</span></div>
-              <ul className="space-y-2 text-gray-400 text-sm mb-4">
-                <li>✅ Links ilimitados</li>
-                <li>✅ Ecommerce</li>
-                <li>✅ Donations</li>
-              </ul>
-              <Link href="/register" className="block text-center py-2 bg-gray-700 text-white rounded-lg">Comenzar</Link>
-            </div>
-            
-            <div className="p-6 bg-gray-800 rounded-2xl border border-gray-700">
-              <h3 className="text-lg font-semibold text-white mb-2">Enterprise</h3>
-              <div className="text-3xl font-bold text-white mb-4">$19.99<span className="text-sm text-gray-400">/mes</span></div>
-              <ul className="space-y-2 text-gray-400 text-sm mb-4">
-                <li>✅ Todo Pro</li>
-                <li>✅ Team</li>
-                <li>✅ API</li>
-              </ul>
-              <Link href="/register" className="block text-center py-2 bg-gray-700 text-white rounded-lg">Comenzar</Link>
-            </div>
+      <section id="pricing" className="py-20">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Planes para todos
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {plans.map((plan, i) => (
+              <Card key={i} className={plan.popular ? "border-primary" : ""}>
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-semibold mb-2">{plan.name}</h3>
+                  <div className="mb-4">
+                    <span className="text-3xl font-bold">{plan.price}</span>
+                    <span className="text-muted-foreground">{plan.period}</span>
+                  </div>
+                  <ul className="space-y-2 mb-6">
+                    {plan.features.map((f, j) => (
+                      <li key={j} className="flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-green-500" />
+                        <span className="text-sm">{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button className="w-full" variant={plan.popular ? "default" : "outline"}>
+                    {plan.cta}
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
+
+      {/* CTA */}
+      <section className="py-20 bg-primary text-primary-foreground">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-4">
+            Empieza gratis hoy
+          </h2>
+          <p className="mb-8 opacity-90">
+            Sin tarjeta de crédito. Configuración en minutos.
+          </p>
+          <Link href="/register">
+            <Button size="lg" variant="secondary" className="text-lg px-8">
+              Crear mi BioCard <ArrowRight className="ml-2" />
+            </Button>
+          </Link>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-8 border-t">
+        <div className="container mx-auto px-4 text-center text-muted-foreground">
+          <p>© 2026 BioCard. Todos los derechos reservados.</p>
+        </div>
+      </footer>
     </div>
   );
 }
